@@ -11,7 +11,7 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"/home/asd/Documents/school/ui/build/assets/frame3")
+ASSETS_PATH = OUTPUT_PATH / Path(r"/home/myagmartseren/Documents/school/pre_desktop/build/assets/frame3")
 
 
 def relative_to_assets(path: str) -> Path:
@@ -20,15 +20,15 @@ def relative_to_assets(path: str) -> Path:
 
 window = Tk()
 
-window.geometry("1440x1024")
-window.configure(bg = "#1A1D2B")
+window.geometry("1354x676")
+window.configure(bg = "#FFFFFF")
 
 
 canvas = Canvas(
     window,
-    bg = "#1A1D2B",
-    height = 1024,
-    width = 1440,
+    bg = "#FFFFFF",
+    height = 676,
+    width = 1354,
     bd = 0,
     highlightthickness = 0,
     relief = "ridge"
@@ -36,34 +36,35 @@ canvas = Canvas(
 
 canvas.place(x = 0, y = 0)
 canvas.create_rectangle(
+    56.0,
+    162.0,
+    1496.0,
+    1184.0,
+    fill="#F5F5F5",
+    outline="")
+
+canvas.create_rectangle(
     0.0,
-    33.0,
-    1450.0,
-    1100.0,
-    fill="#ADD8E6",
-    outline="")
-
-canvas.create_rectangle(
-    382.0,
-    132.0,
-    1440.0,
-    1034.0,
+    0.0,
+    574.35986328125,
+    676.0,
     fill="#D4F1F4",
     outline="")
 
-canvas.create_rectangle(
-    382.0,
-    94.0,
-    1440.0,
-    1034.0,
-    fill="#D4F1F4",
-    outline="")
+canvas.create_text(
+    694.0,
+    122.0,
+    anchor="nw",
+    text="Бүртгүүлэх",
+    fill="#003B73",
+    font=("Inter SemiBold", 19 * -1)
+)
 
 entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_1.png"))
 entry_bg_1 = canvas.create_image(
-    707.0,
-    55.0,
+    804.5,
+    211.0,
     image=entry_image_1
 )
 entry_1 = Entry(
@@ -73,10 +74,77 @@ entry_1 = Entry(
     highlightthickness=0
 )
 entry_1.place(
-    x=382.0,
-    y=30.0,
-    width=650.0,
-    height=48.0
+    x=697.5299999713898,
+    y=195.0,
+    width=213.94000005722046,
+    height=30.0
+)
+
+canvas.create_text(
+    694.0,
+    180.0,
+    anchor="nw",
+    text="Овог",
+    fill="#189AB4",
+    font=("Inter SemiBold", 9 * -1)
+)
+
+entry_image_2 = PhotoImage(
+    file=relative_to_assets("entry_2.png"))
+entry_bg_2 = canvas.create_image(
+    804.5,
+    331.0,
+    image=entry_image_2
+)
+entry_2 = Entry(
+    bd=0,
+    bg="#FFFFFF",
+    fg="#000716",
+    highlightthickness=0
+)
+entry_2.place(
+    x=697.5299999713898,
+    y=315.0,
+    width=213.94000005722046,
+    height=30.0
+)
+
+canvas.create_text(
+    694.0,
+    295.0,
+    anchor="nw",
+    text="Имэйл хаяг",
+    fill="#189AB4",
+    font=("Inter SemiBold", 9 * -1)
+)
+
+entry_image_3 = PhotoImage(
+    file=relative_to_assets("entry_3.png"))
+entry_bg_3 = canvas.create_image(
+    803.5,
+    388.0,
+    image=entry_image_3
+)
+entry_3 = Entry(
+    bd=0,
+    bg="#FFFFFF",
+    fg="#000716",
+    highlightthickness=0
+)
+entry_3.place(
+    x=696.5299999713898,
+    y=372.0,
+    width=213.94000005722046,
+    height=30.0
+)
+
+canvas.create_text(
+    695.0,
+    354.0,
+    anchor="nw",
+    text="Нууц үг",
+    fill="#189AB4",
+    font=("Inter SemiBold", 9 * -1)
 )
 
 button_image_1 = PhotoImage(
@@ -89,10 +157,97 @@ button_1 = Button(
     relief="flat"
 )
 button_1.place(
-    x=62.0,
-    y=312.0,
-    width=214.0,
-    height=52.0
+    x=695.0,
+    y=501.0,
+    width=221.0,
+    height=32.0
+)
+
+entry_image_4 = PhotoImage(
+    file=relative_to_assets("entry_4.png"))
+entry_bg_4 = canvas.create_image(
+    1080.5,
+    388.0,
+    image=entry_image_4
+)
+entry_4 = Entry(
+    bd=0,
+    bg="#FFFFFF",
+    fg="#000716",
+    highlightthickness=0
+)
+entry_4.place(
+    x=973.5299999713898,
+    y=372.0,
+    width=213.94000005722046,
+    height=30.0
+)
+
+entry_image_5 = PhotoImage(
+    file=relative_to_assets("entry_5.png"))
+entry_bg_5 = canvas.create_image(
+    804.5,
+    271.0,
+    image=entry_image_5
+)
+entry_5 = Entry(
+    bd=0,
+    bg="#FFFFFF",
+    fg="#000716",
+    highlightthickness=0
+)
+entry_5.place(
+    x=697.5299999713898,
+    y=255.0,
+    width=213.94000005722046,
+    height=30.0
+)
+
+canvas.create_text(
+    695.0,
+    236.0,
+    anchor="nw",
+    text="Хэрэглэгчийн нэр",
+    fill="#189AB4",
+    font=("Inter SemiBold", 9 * -1)
+)
+
+canvas.create_text(
+    970.0,
+    354.0,
+    anchor="nw",
+    text="Нууц үгээ баталгаажуулах",
+    fill="#189AB4",
+    font=("Inter SemiBold", 9 * -1)
+)
+
+entry_image_6 = PhotoImage(
+    file=relative_to_assets("entry_6.png"))
+entry_bg_6 = canvas.create_image(
+    1080.5,
+    211.0,
+    image=entry_image_6
+)
+entry_6 = Entry(
+    bd=0,
+    bg="#FFFFFF",
+    fg="#000716",
+    highlightthickness=0
+)
+entry_6.place(
+    x=973.5299999713898,
+    y=195.0,
+    width=213.94000005722046,
+    height=30.0
+)
+
+canvas.create_text(
+    970.0,
+    178.0,
+    anchor="nw",
+    text="Нэр ",
+    fill="#189AB4",
+    font=("Inter SemiBold", 9 * -1)
 )
 
 button_image_2 = PhotoImage(
@@ -105,147 +260,26 @@ button_2 = Button(
     relief="flat"
 )
 button_2.place(
-    x=50.0,
-    y=132.0,
-    width=130.0,
-    height=51.0
-)
-
-button_image_3 = PhotoImage(
-    file=relative_to_assets("button_3.png"))
-button_3 = Button(
-    image=button_image_3,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_3 clicked"),
-    relief="flat"
-)
-button_3.place(
-    x=50.0,
-    y=200.0,
-    width=236.0,
-    height=43.0
-)
-
-canvas.create_rectangle(
-    1136.0,
-    30.0,
-    1320.0,
-    80.0,
-    fill="#E8EBEC",
-    outline="")
-
-button_image_4 = PhotoImage(
-    file=relative_to_assets("button_4.png"))
-button_4 = Button(
-    image=button_image_4,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_4 clicked"),
-    relief="flat"
-)
-button_4.place(
-    x=1264.0,
-    y=41.0,
-    width=32.0,
-    height=32.0
-)
-
-canvas.create_text(
-    1163.0,
-    40.0,
-    anchor="nw",
-    text="Хэрэглэгч",
-    fill="#003B73",
-    font=("Inter SemiBold", 18 * -1)
-)
-
-button_image_5 = PhotoImage(
-    file=relative_to_assets("button_5.png"))
-button_5 = Button(
-    image=button_image_5,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_5 clicked"),
-    relief="flat"
-)
-button_5.place(
-    x=60.0,
-    y=257.0,
-    width=211.0,
-    height=40.0
-)
-
-button_image_6 = PhotoImage(
-    file=relative_to_assets("button_6.png"))
-button_6 = Button(
-    image=button_image_6,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_6 clicked"),
-    relief="flat"
-)
-button_6.place(
-    x=438.0,
-    y=241.0,
-    width=282.0,
-    height=195.0
-)
-
-button_image_7 = PhotoImage(
-    file=relative_to_assets("button_7.png"))
-button_7 = Button(
-    image=button_image_7,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_7 clicked"),
-    relief="flat"
-)
-button_7.place(
-    x=770.0,
-    y=243.0,
-    width=282.0,
-    height=195.0
-)
-
-button_image_8 = PhotoImage(
-    file=relative_to_assets("button_8.png"))
-button_8 = Button(
-    image=button_image_8,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_8 clicked"),
-    relief="flat"
-)
-button_8.place(
-    x=1106.0,
-    y=241.0,
-    width=282.0,
-    height=195.0
+    x=693.0,
+    y=413.0,
+    width=186.0,
+    height=14.0
 )
 
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
 image_1 = canvas.create_image(
-    121.0,
-    72.0,
+    740.0,
+    63.0,
     image=image_image_1
 )
 
-button_image_9 = PhotoImage(
-    file=relative_to_assets("button_9.png"))
-button_9 = Button(
-    image=button_image_9,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_9 clicked"),
-    relief="flat"
-)
-button_9.place(
-    x=1358.0,
-    y=30.0,
-    width=69.0,
-    height=48.0
+image_image_2 = PhotoImage(
+    file=relative_to_assets("image_2.png"))
+image_2 = canvas.create_image(
+    287.0,
+    338.0,
+    image=image_image_2
 )
 window.resizable(False, False)
 window.mainloop()

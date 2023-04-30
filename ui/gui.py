@@ -11,7 +11,7 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"/home/asd/Documents/school/ui/build/assets/frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"/home/myagmartseren/Documents/school/pre_desktop/build/assets/frame0")
 
 
 def relative_to_assets(path: str) -> Path:
@@ -38,8 +38,8 @@ canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
 image_1 = canvas.create_image(
-    763.0,
-    565.0,
+    720.0,
+    512.0,
     image=image_image_1
 )
 
@@ -55,7 +55,7 @@ entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_1.png"))
 entry_bg_1 = canvas.create_image(
     660.0,
-    331.0,
+    347.5,
     image=entry_image_1
 )
 entry_1 = Entry(
@@ -66,16 +66,25 @@ entry_1 = Entry(
 )
 entry_1.place(
     x=463.0,
-    y=288.0,
+    y=321.0,
     width=394.0,
-    height=84.0
+    height=51.0
+)
+
+canvas.create_text(
+    458.0,
+    288.0,
+    anchor="nw",
+    text="Имэйл хаяг ",
+    fill="#003B73",
+    font=("Inter SemiBold", 16 * -1)
 )
 
 entry_image_2 = PhotoImage(
     file=relative_to_assets("entry_2.png"))
 entry_bg_2 = canvas.create_image(
     660.0,
-    448.0,
+    464.5,
     image=entry_image_2
 )
 entry_2 = Entry(
@@ -86,9 +95,18 @@ entry_2 = Entry(
 )
 entry_2.place(
     x=463.0,
-    y=405.0,
+    y=438.0,
     width=394.0,
-    height=84.0
+    height=51.0
+)
+
+canvas.create_text(
+    458.0,
+    405.0,
+    anchor="nw",
+    text="Нууц үг\n",
+    fill="#003B73",
+    font=("Inter SemiBold", 16 * -1)
 )
 
 button_image_1 = PhotoImage(

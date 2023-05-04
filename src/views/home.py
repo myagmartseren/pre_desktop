@@ -3,13 +3,14 @@ from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from ..utils import relative_to_assets
 
 
-OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"../../assets/frames/frame1")
+# OUTPUT_PATH = Path(__file__).parent
+# ASSETS_PATH = OUTPUT_PATH / Path(r"../../assets/frames/frame1")
 
-def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH / Path(path)
+# def relative_to_assets(path: str) -> Path:
+#     return ASSETS_PATH / Path(path)
 
 
 window = Tk()

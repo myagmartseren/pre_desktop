@@ -4,14 +4,7 @@ from pathlib import Path
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
-
-OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"../../assets/frames/frame0")
-
-
-def relative_to_assets(path: str) -> Path:
-    print(ASSETS_PATH / Path(path))
-    return ASSETS_PATH / Path(path)
+from utils import relative_to_assets
 
 class LoginView:
     def __init__(self,root,db):
@@ -32,7 +25,7 @@ class LoginView:
 
         canvas.place(x = 0, y = 0)
         background_logo = PhotoImage(
-            file=relative_to_assets("image_1.png"))
+            file=relative_to_assets("frame0/image_1.png"))
         image_1 = canvas.create_image(
             720.0,
             512.0,
@@ -40,7 +33,7 @@ class LoginView:
         )
 
         background_rectangle = PhotoImage(
-            file=relative_to_assets("image_2.png"))
+            file=relative_to_assets("frame0/image_2.png"))
         image_2 = canvas.create_image(
             660.0,
             491.0,
@@ -48,12 +41,12 @@ class LoginView:
         )
 
         login_image = PhotoImage(
-            file=relative_to_assets("button_1.png"))
+            file=relative_to_assets("frame0/button_1.png"))
         login_button = Button(
             image=login_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_1 clicked"),
+            command=lambda: print("frame0/button_1 clicked"),
             relief="flat"
         )
         login_button.place(
@@ -66,7 +59,7 @@ class LoginView:
         #region Password
 
         image_image_3 = PhotoImage(
-            file=relative_to_assets("image_3.png"))
+            file=relative_to_assets("frame0/image_3.png"))
         image_3 = canvas.create_image(
             660.0,
             464.0,
@@ -74,7 +67,7 @@ class LoginView:
         )
 
         password_image = PhotoImage(
-            file=relative_to_assets("entry_1.png"))
+            file=relative_to_assets("frame0/entry_1.png"))
         password_bg = canvas.create_image(
             659.5,
             465.0,
@@ -106,7 +99,7 @@ class LoginView:
 
         #region Email
         email_image = PhotoImage(
-            file=relative_to_assets("image_4.png"))
+            file=relative_to_assets("frame0/image_4.png"))
         image_4 = canvas.create_image(
             660.0,
             347.0,
@@ -114,7 +107,7 @@ class LoginView:
         )
 
         email_image_2 = PhotoImage(
-            file=relative_to_assets("entry_2.png"))
+            file=relative_to_assets("frame0/entry_2.png"))
         email_bg_2 = canvas.create_image(
             659.5,
             348.0,

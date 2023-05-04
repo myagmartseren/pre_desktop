@@ -1,17 +1,17 @@
 import tkinter as tk
-from ui.windows.main_window import MainWindow
+from db import Database
+# from encryption.symmetric import SymmetricEncryption
+# from encryption.proxy_reencryption import ProxyReencryption
+from views.login import LoginView
 
+# initialize database, symmetric encryption, and proxy reencryption
+db = Database("database.db")
+current_user = None
+# se = SymmetricEncryption()
+# pre = ProxyReencryption()
 
-def main():
-    # Create the root Tkinter window
-    root = tk.Tk()
-
-    # Create the main application window
-    main_window = MainWindow(root)
-
-    # Start the main event loop
-    root.mainloop()
-
-
-if __name__ == '__main__':
-    main()
+# initialize login GUI
+main = tk.Tk()
+main.title("Login")
+main_window = LoginView(main, db)
+main_window.mainloop()

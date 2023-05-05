@@ -12,6 +12,5 @@ current_user = None
 
 # initialize login GUI
 main = tk.Tk()
-main.title("Login")
-main_window = LoginView(main, db)
-main_window.mainloop()
+view = LoginView(main, db)
+# view.window.mainloop()

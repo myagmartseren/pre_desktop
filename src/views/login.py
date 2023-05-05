@@ -1,16 +1,18 @@
 from pathlib import Path
+from api.auth import login
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
-
+from tkinter import Canvas, Entry, Text, Button, PhotoImage,Frame
 from utils import relative_to_assets
 
-class LoginView:
+class LoginView(Frame):
     def __init__(self,root,db):
         self.window=root
         self.db=db
-
+        #region Init GUI
+        self.window.title("Нэвтрэх")
+        # self.pack()
         self.window.geometry("1440x1024")
         self.window.configure(bg = "#ADD8E6")
         canvas = Canvas(
@@ -22,7 +24,7 @@ class LoginView:
             highlightthickness = 0,
             relief = "ridge"
         )
-
+        
         canvas.place(x = 0, y = 0)
         background_logo = PhotoImage(
             file=relative_to_assets("frame0/image_1.png"))
@@ -46,18 +48,18 @@ class LoginView:
             image=login_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("frame0/button_1 clicked"),
+            # command=lambda: print("frame0/button_1 clicked"),
+            command=self.login,
             relief="flat"
         )
+
         login_button.place(
             x=458.0,
             y=537.0,
             width=404.0,
             height=53.0
         )
-
         #region Password
-
         image_image_3 = PhotoImage(
             file=relative_to_assets("frame0/image_3.png"))
         image_3 = canvas.create_image(
@@ -74,13 +76,13 @@ class LoginView:
             image=password_image
         )
 
-        password_entry = Entry(
+        self.password_entry = Entry(
             bd=0,
             bg="#F5F5F5",
             fg="#000716",
             highlightthickness=0
         )
-        password_entry.place(
+        self.password_entry.place(
             x=463.0,
             y=444.0,
             width=393.0,
@@ -114,14 +116,14 @@ class LoginView:
             image=email_image_2
         )
 
-        email_entry = Entry(
+        self.email_entry = Entry(
             bd=0,
             bg="#F5F5F5",
             fg="#000716",
             highlightthickness=0
         )
 
-        email_entry.place(
+        self.email_entry.place(
             x=463.0,
             y=327.0,
             width=393.0,
@@ -147,3 +149,21 @@ class LoginView:
         )
         self.window.resizable(False, False)
         self.window.mainloop()
+        #endregion Init GUI
+    
+    def login(self):
+        username = self.email_entry.get()
+        password = self.password_entry.get()
+
+        # Call the login_user function from the API module
+        # Pass the username and password arguments
+        # If login is successful, open the home screen
+        if login(username, password):
+            self.open_home_view()
+        # else:
+            # messagebox.showerror("Error", "Invalid username or password")
+        # def open_home_view(self):
+        #     # Hide the login screen and show the home screen
+        #     self.master.withdraw()
+        #     home_view = HomeView(self.master)
+        #     home_view.pack()

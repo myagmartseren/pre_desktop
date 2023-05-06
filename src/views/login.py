@@ -1,7 +1,3 @@
-from pathlib import Path
-
-# from tkinter import *
-# Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
 from utils import relative_to_assets
 import api
@@ -148,9 +144,6 @@ class LoginView:
         email = self.email.get()
         password = self.password.get()
         print(email,password)
-        # Call the login_user function from the API module
-        # Pass the username and password arguments
-        # If login is successful, open the home screen
         self.open_home_view()
         
         if api.login(email, password):

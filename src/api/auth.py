@@ -1,7 +1,10 @@
 import requests
+from db.database import User
+
+API_URL = 'http://localhost:5000'
 
 def login(username, password):
-    url = "https://example.com/api/login"
+    url = API_URL+"/api/login"
     data = {
         "username": username,
         "password": password,
@@ -12,12 +15,15 @@ def login(username, password):
     else:
         return None
 
-def register(username, password):
-    url = "https://example.com/api/register"
+def register(user: User):
+    url = API_URL+"/api/register"
     data = {
-        "username": username,
-        "password": password,
+        "firstname": user.firstname,
+        "lastname": user.lastname,
+        "email": user.email,
+        "password": user.password,
     }
+    
     response = requests.post(url, data=data)
     if response.status_code == 200:
         return True

@@ -2,6 +2,9 @@ from pathlib import Path
 
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 from utils import relative_to_assets
+from api.auth import register
+from db.database import User
+from .main_with_file import MainView
 
 #  frame3"
 
@@ -11,7 +14,7 @@ class RegisterView:
         self.db=db
         self.window.geometry("1354x676")
         self.window.configure(bg = "#FFFFFF")
-
+        # region GUI
         canvas = Canvas(
             self.window,
             bg = "#FFFFFF",
@@ -295,3 +298,16 @@ class RegisterView:
         )
         self.window.resizable(False, False)
         self.window.mainloop()
+        #endregion GUI
+    def register(self):
+        email = self.email.get()
+        password = self.password.get()
+        password_confirm = self.password.get()
+        if register(user=User(
+            firstname=self.firstname.get(),
+            lastname=self.lastname.get(),
+            email = email,
+            password = password,
+        )):
+            MainView(self.window,self.db)
+            

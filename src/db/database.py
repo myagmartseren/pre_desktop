@@ -1,48 +1,48 @@
-import sqlite3
+from sqlalchemy import create_engine, Column, Integer, String, LargeBinary, DateTime,func, relationship
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(120), unique=True, nullable=False)
+    last_name = Column(String(120), unique=True, nullable=False)
+    email = Column(String(120), unique=True, nullable=False)
+    public_key = Column(LargeBinary, unique=False, nullable=True)
+    signer_key = Column(LargeBinary, unique=False, nullable=True)
+    private_key = Column(LargeBinary, unique=False, nullable=True)
+    password_hash = Column(String(128), nullable=False)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+    
+    files = relationship('File', backref='owner', lazy=True)
 
 class Database:
     def __init__(self, db_file):
-        self.conn = sqlite3.connect(db_file)
-        self.create_tables()
-
-    def create_tables(self):
-        user_table_sql = """
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY,
-                username TEXT UNIQUE,
-                password TEXT,
-                full_name TEXT,
-                email TEXT
-            )
-        """
-        self.conn.execute(user_table_sql)
+        self.engine = create_engine(f'sqlite:///{db_file}')
+        self.session = sessionmaker(bind=self.engine)()
+        Base.metadata.create_all(self.engine)
 
     def create_user(self, username, password, full_name, email):
-        sql = "INSERT INTO users (username, password, full_name, email) VALUES (?, ?, ?, ?)"
-        self.conn.execute(sql, (username, password, full_name, email))
-        self.conn.commit()
+        user = User(username=username, password=password, full_name=full_name, email=email)
+        self.session.add(user)
+        self.session.commit()
 
     def get_user_by_id(self, user_id):
-        sql = "SELECT id, username, password, full_name, email FROM users WHERE id = ?"
-        cursor = self.conn.execute(sql, (user_id,))
-        row = cursor.fetchone()
-        if row is None:
-            return None
-        return {'id': row[0], 'username': row[1], 'password': row[2], 'full_name': row[3], 'email': row[4]}
+        return self.session.query(User).filter_by(id=user_id).first()
 
     def get_user_by_username(self, username):
-        sql = "SELECT id, username, password, full_name, email FROM users WHERE username = ?"
-        cursor = self.conn.execute(sql, (username,))
-        row = cursor.fetchone()
-        if row is None:
-            return None
-        return {'id': row[0], 'username': row[1], 'password': row[2], 'full_name': row[3], 'email': row[4]}
+        return self.session.query(User).filter_by(username=username).first()
 
     def authenticate_user(self, username, password):
         user = self.get_user_by_username(username)
         if user is None:
             return False
-        return user['password'] == password
+        return user.password == password
 
     def close(self):
-        self.conn.close()
+        self.session.close()

@@ -1,7 +1,4 @@
 [MASTER]
-
-# Enable the following checks:
-
 disable=
     missing-docstring,
     bad-builtin,
@@ -16,6 +13,4 @@ disable=
     consider-using-f-string,
     fixme,
 
-# Set the following options:
-
-max-line-length=100
+max-line-length=120

@@ -1,0 +1,21 @@
+[MASTER]
+
+# Enable the following checks:
+
+disable=
+    missing-docstring,
+    bad-builtin,
+    global-statement,
+    redefined-outer-name,
+    too-many-arguments,
+    too-many-locals,
+    too-many-statements,
+    ungrouped-imports,
+    unidiomatic-typecheck,
+    broad-except,
+    consider-using-f-string,
+    fixme,
+
+# Set the following options:
+
+max-line-length=100,

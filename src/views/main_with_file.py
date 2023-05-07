@@ -1,11 +1,10 @@
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
+from tkinter import Canvas, Entry, Button, PhotoImage
 from utils import relative_to_assets
 
 
 class MainView:
-    def __init__(self,main,db):
+    def __init__(self,main):
         self.window = main
-        self.db=db
         self.window.geometry("1440x1024")
         self.window.configure(bg = "#1A1D2B")
         self.window.resizable(False, False)

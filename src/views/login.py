@@ -1,4 +1,4 @@
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
+from tkinter import Canvas, Entry, Button, PhotoImage, messagebox
 from utils import relative_to_assets
 import api
 from .main_with_file import MainView
@@ -6,11 +6,10 @@ from .register import RegisterView
 
 
 class LoginView:
-    def __init__(self,main,db):
+    def __init__(self,main):
         self.window = main
         self.window.geometry("1440x1024")
         self.window.configure(bg = "#ADD8E6")
-        self.db = db
         #region GUI
         canvas = Canvas(
             self.window,
@@ -147,20 +146,12 @@ class LoginView:
         self.open_home_view()
         
         if api.login(email, password):
-            self.open_home_view()
-        # else:
-            # messagebox.showerror("Error", "Invalid username or password")
+            print(self.open_home_view())
+        else:
+            messagebox.showerror("Error", "Invalid username or password")
 
     def open_register_view(self):
-        # Hide the login screen and show the home screen
-        # self.window.withdraw()
-        # self.window.destroy()
-        RegisterView(self.window,self.db)
-        # home_view.pack()
+        RegisterView(self.window)
 
     def open_home_view(self):
-        # Hide the login screen and show the home screen
-        # self.window.withdraw()
-        # self.window.destroy()
-        MainView(self.window,self.db)
-        # home_view.pack()
+        MainView(self.window)

@@ -1,5 +1,5 @@
 import requests
-from db.database import User
+from model import User
 
 API_URL = 'http://localhost:5000'
 

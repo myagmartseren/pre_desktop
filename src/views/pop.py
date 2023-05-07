@@ -1,12 +1,11 @@
 from utils import relative_to_assets
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Canvas, Entry, Button, PhotoImage
 
 # frame4
 
 class PopView:
-    def __init__(self,main,db):
+    def __init__(self,main):
         self.window = main
-        self.db = db
         self.window.geometry("1354x676")
         self.window.configure(bg = "#FFFFFF")
 

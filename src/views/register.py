@@ -1,17 +1,14 @@
-from pathlib import Path
-
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Canvas, Entry, Button, PhotoImage
 from utils import relative_to_assets
 from api.auth import register
-from db.database import User
+from model import User
 from .main_with_file import MainView
 
 #  frame3"
 
 class RegisterView:
-    def __init__(self,main,db):
+    def __init__(self,main):
         self.window = main
-        self.db=db
         self.window.geometry("1354x676")
         self.window.configure(bg = "#FFFFFF")
         # region GUI
@@ -309,5 +306,5 @@ class RegisterView:
             email = email,
             password = password,
         )):
-            MainView(self.window,self.db)
+            MainView(self.window)
             

@@ -3,7 +3,7 @@ from utils import relative_to_assets
 import api
 from .main_with_file import MainView
 from .register import RegisterView
-
+import main
 
 class LoginView:
     def __init__(self,main):
@@ -142,11 +142,10 @@ class LoginView:
     def login(self):
         email = self.email.get()
         password = self.password.get()
-        print(email,password)
-        self.open_home_view()
-        
-        if api.login(email, password):
-            print(self.open_home_view())
+        user = api.login(email, password):
+        if user:
+            main.current_user = user
+            self.open_home_view()
         else:
             messagebox.showerror("Error", "Invalid username or password")
 

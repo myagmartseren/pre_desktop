@@ -6,23 +6,24 @@ from .main_with_file import MainView
 
 #  frame3"
 
+
 class RegisterView:
-    def __init__(self,main):
+    def __init__(self, main):
         self.window = main
         self.window.geometry("1354x676")
-        self.window.configure(bg = "#FFFFFF")
+        self.window.configure(bg="#FFFFFF")
         # region GUI
         canvas = Canvas(
             self.window,
-            bg = "#FFFFFF",
-            height = 676,
-            width = 1354,
-            bd = 0,
-            highlightthickness = 0,
-            relief = "ridge"
+            bg="#FFFFFF",
+            height=676,
+            width=1354,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
         )
 
-        canvas.place(x = 0, y = 0)
+        canvas.place(x=0, y=0)
         canvas.create_rectangle(
             0.0,
             0.0,
@@ -31,16 +32,17 @@ class RegisterView:
             fill="#D4F1F4",
             outline="")
 
-        button_image_1 = PhotoImage(
+        register_image = PhotoImage(
             file=relative_to_assets("frame3/button_1.png"))
-        button_1 = Button(
-            image=button_image_1,
+
+        register_button = Button(
+            image=register_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_1 clicked"),
+            command=lambda: self.register_action(),
             relief="flat"
         )
-        button_1.place(
+        register_button.place(
             x=695.0,
             y=501.0,
             width=221.0,
@@ -56,28 +58,31 @@ class RegisterView:
             font=("Inter SemiBold", 19 * -1)
         )
 
-        image_image_1 = PhotoImage(
+        logo_bg_image = PhotoImage(
             file=relative_to_assets("frame3/image_1.png"))
         image_1 = canvas.create_image(
             1080.0,
             388.0,
-            image=image_image_1
+            image=logo_bg_image
         )
 
-        entry_image_1 = PhotoImage(
+        password_confirm_entry_image = PhotoImage(
             file=relative_to_assets("frame3/entry_1.png"))
-        entry_bg_1 = canvas.create_image(
+        password_confirm_entry_bg_1 = canvas.create_image(
             1080.5,
             388.0,
-            image=entry_image_1
+            image=password_confirm_entry_image
         )
-        entry_1 = Entry(
+
+        self.password_confirm_entry = Entry(
+            show="*",
             bd=0,
             bg="#FFFAFA",
             fg="#000716",
             highlightthickness=0
         )
-        entry_1.place(
+
+        self.password_confirm_entry.place(
             x=973.0,
             y=375.0,
             width=215.0,
@@ -108,13 +113,14 @@ class RegisterView:
             388.0,
             image=entry_image_2
         )
-        entry_2 = Entry(
+        self.password_entry = Entry(
+            show="*",
             bd=0,
             bg="#FFFFFF",
             fg="#000716",
             highlightthickness=0
         )
-        entry_2.place(
+        self.password_entry.place(
             x=696.0,
             y=375.0,
             width=215.0,
@@ -145,13 +151,13 @@ class RegisterView:
             331.0,
             image=entry_image_3
         )
-        entry_3 = Entry(
+        self.email_entry = Entry(
             bd=0,
             bg="#FFFFFF",
             fg="#000716",
             highlightthickness=0
         )
-        entry_3.place(
+        self.email_entry.place(
             x=697.0,
             y=318.0,
             width=215.0,
@@ -182,13 +188,13 @@ class RegisterView:
             271.0,
             image=entry_image_4
         )
-        entry_4 = Entry(
+        self.username_entry = Entry(
             bd=0,
             bg="#FFFFFF",
             fg="#000716",
             highlightthickness=0
         )
-        entry_4.place(
+        self.username_entry.place(
             x=697.0,
             y=258.0,
             width=215.0,
@@ -219,13 +225,13 @@ class RegisterView:
             210.5,
             image=entry_image_5
         )
-        entry_5 = Entry(
+        self.firstname_entry = Entry(
             bd=0,
             bg="#FFFFFF",
             fg="#000716",
             highlightthickness=0
         )
-        entry_5.place(
+        self.firstname_entry.place(
             x=974.0,
             y=197.0,
             width=214.0,
@@ -256,13 +262,13 @@ class RegisterView:
             211.0,
             image=entry_image_6
         )
-        entry_6 = Entry(
+        self.lastname_entry = Entry(
             bd=0,
             bg="#FFFFFF",
             fg="#000716",
             highlightthickness=0
         )
-        entry_6.place(
+        self.lastname_entry.place(
             x=697.0,
             y=198.0,
             width=215.0,
@@ -295,16 +301,11 @@ class RegisterView:
         )
         self.window.resizable(False, False)
         self.window.mainloop()
-        #endregion GUI
-    def register(self):
-        email = self.email.get()
-        password = self.password.get()
-        password_confirm = self.password.get()
-        if register(user=User(
-            firstname=self.firstname.get(),
-            lastname=self.lastname.get(),
-            email = email,
-            password = password,
-        )):
+        # endregion GUI
+
+    def register_action(self):
+        email = self.email_entry.get()
+        password = self.password_entry.get()
+        password_confirm = self.password_confirm_entry.get()
+        if register(user=User({"firstname": self.firstname_entry.get(), "lastname": self.lastname_entry.get(), "email": email, "password": password, "username":self.username_entry.get()})):
             MainView(self.window)
-            

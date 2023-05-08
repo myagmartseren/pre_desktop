@@ -347,3 +347,4 @@ class MainView:
         self.window.resizable(False, False)
         self.window.mainloop()
         #endregion GUI Home
+    # def 

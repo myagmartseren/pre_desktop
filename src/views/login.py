@@ -1,9 +1,9 @@
 from tkinter import Canvas, Entry, Button, PhotoImage, messagebox
 from utils import relative_to_assets
 import api
-from .main_with_file import MainView
+from .home import MainView
 from .register import RegisterView
-import main
+# import main
 
 class LoginView:
     def __init__(self,main):
@@ -140,14 +140,14 @@ class LoginView:
         self.window.mainloop()
     
     def login(self):
-        email = self.email.get()
-        password = self.password.get()
-        user = api.login(email, password):
-        if user:
-            main.current_user = user
-            self.open_home_view()
-        else:
-            messagebox.showerror("Error", "Invalid username or password")
+        # email = self.email.get()
+        # password = self.password.get()
+        # user = api.login(email, password)
+        # if user:
+            # main.current_user = user
+        self.open_home_view()
+        # else:
+            # messagebox.showerror("Error", "Invalid username or password")
 
     def open_register_view(self):
         RegisterView(self.window)

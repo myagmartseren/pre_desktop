@@ -2,10 +2,9 @@ from tkinter import Canvas, Entry, Button, PhotoImage
 from utils import relative_to_assets
 from api.auth import register
 from model import User
-from .main_with_file import MainView
+from .home import MainView
 
 #  frame3"
-
 
 class RegisterView:
     def __init__(self, main):

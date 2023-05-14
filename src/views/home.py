@@ -1,5 +1,7 @@
-from tkinter import Canvas, Entry, Button, PhotoImage, StringVar
-from utils import relative_to_assets
+from tkinter import Canvas, Entry, Tk, Button, PhotoImage, StringVar, filedialog
+from utils import relative_to_assets, relative_to_files
+from .pop import PopView
+from cryptography.fernet import Fernet
 
 files =  list()
 for i in range(9):
@@ -58,7 +60,7 @@ class MainView:
                         image=file_image,
                         borderwidth=0,
                         highlightthickness=0,
-                        command=lambda: print("button_3 clicked"),
+                        command=self.open_pop_view,
                         relief="flat",
                         textvariable=self.file_names[i*3+j],
                         compound="center",
@@ -134,7 +136,7 @@ class MainView:
             image=new_file_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_13 clicked"),
+            command=self.open_file,
             relief="flat"
         )
         new_file_button.place(
@@ -347,4 +349,27 @@ class MainView:
         self.window.resizable(False, False)
         self.window.mainloop()
         #endregion GUI Home
-    # def 
+    def open_pop_view(self):
+        PopView(Tk())
+
+    def open_file(self):
+        # Open the file dialog.
+        # filetypes = (("All files", "*.txt"))
+        filename = filedialog.askopenfilename(title="Select a file", initialdir="/")
+
+        # Display the file name in the label.
+        # label.config(text=filename)
+
+        # Get the file contents.
+        with open(filename, "rb") as f:
+            contents = f.read()
+        key = Fernet.generate_key()
+        f =Fernet(key)
+        encrypted_contents = f.encrypt(contents)
+        
+        # Save the encrypted file contents to a new file.
+        import os 
+        file_path = os.path.join("../files", "encrypted_"+filename)
+
+        with open(file_path, "wb") as f:
+            f.write(encrypted_contents)

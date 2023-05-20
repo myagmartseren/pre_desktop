@@ -3,7 +3,7 @@ from utils import relative_to_assets
 import api
 from .home import MainView
 from .register import RegisterView
-# import main
+from models import User
 
 class LoginView:
     def __init__(self,main):
@@ -70,6 +70,7 @@ class LoginView:
         password_img = PhotoImage(file=relative_to_assets("frame0/entry_1.png"))
         password_bg = canvas.create_image(659.5,465.0,image=password_img)
         self.password = Entry(
+            show='*',
             bd=0,
             bg="#F5F5F5",
             fg="#000716",
@@ -140,14 +141,15 @@ class LoginView:
         self.window.mainloop()
     
     def login(self):
-        # email = self.email.get()
-        # password = self.password.get()
-        # user = api.login(email, password)
-        # if user:
-            # main.current_user = user
-        self.open_home_view()
-        # else:
-            # messagebox.showerror("Error", "Invalid username or password")
+        email = self.email.get()
+        password = self.password.get()
+        user = api.login(email, password)
+        import main
+        if user:
+            main.current_user = user
+            self.open_home_view()
+        else:
+            messagebox.showerror("Error", "Invalid username or password")
 
     def open_register_view(self):
         RegisterView(self.window)

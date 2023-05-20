@@ -4,5 +4,6 @@ from views.login import LoginView
 current_user = None
 
 # initialize login GUI
-main = tk.Tk()
-view = LoginView(main)
+if __name__ == '__main__':
+    main = tk.Tk()
+    view = LoginView(main)

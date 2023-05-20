@@ -1,10 +1,9 @@
 from tkinter import Canvas, Entry, Button, PhotoImage
 from utils import relative_to_assets
 from api.auth import register
-from model import User
+from models import User
 from .home import MainView
-
-#  frame3"
+import tkinter as tk
 
 class RegisterView:
     def __init__(self, main):
@@ -307,4 +306,7 @@ class RegisterView:
         password = self.password_entry.get()
         password_confirm = self.password_confirm_entry.get()
         if register(user=User({"firstname": self.firstname_entry.get(), "lastname": self.lastname_entry.get(), "email": email, "password": password, "username":self.username_entry.get()})):
+            # pass
             MainView(self.window)
+        else:
+            tk.messagebox.showinfo("Pop-up Message", "failed to register")

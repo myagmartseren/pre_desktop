@@ -1,5 +1,5 @@
 import requests
-from model import User
+from models import User
 
 API_URL = 'http://localhost:5000'
 
@@ -11,7 +11,7 @@ def login(email, password):
     }
     response = requests.post(url, json=data)
     if response.status_code == 200:
-        return response.json()
+        return User(response.json())
     else:
         return None
 
@@ -26,7 +26,15 @@ def register(user: User):
     }
     
     response = requests.post(url, json=data)
+    
     if response.status_code == 200:
+        import main
+        main.current_user = User(data)
+        data = response.json()
+        import binascii
+        private_key = binascii.unhexlify(data["private_key"])
+        with open("my_private_key.pem", "wb") as f:
+            f.write(private_key)
         return True
     else:
         return False

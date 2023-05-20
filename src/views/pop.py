@@ -2,11 +2,12 @@ from utils import relative_to_assets
 from tkinter import Canvas, Entry, Button, PhotoImage
 
 class PopView:
-    def __init__(self,main):
+    def __init__(self, main):
         self.window = main
         self.window.geometry("423x299")
         self.window.configure(bg = "#FFFFFF")
-
+        self.window.title("File")
+        
         canvas = Canvas(
             self.window,
             bg = "#FFFFFF",
@@ -20,12 +21,14 @@ class PopView:
         canvas.place(x = 0, y = 0)
         button_image_1 = PhotoImage(file=relative_to_assets("frame5/button_1.png"))
         button_1 = Button(
+            self.window,
             image=button_image_1,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: print("button_1 clicked"),
             relief="flat"
         )
+
         button_1.place(
             x=33.0,
             y=238.0,
@@ -36,6 +39,7 @@ class PopView:
         button_image_2 = PhotoImage(
             file=relative_to_assets("frame5/button_2.png"))
         button_2 = Button(
+            self.window,
             image=button_image_2,
             borderwidth=0,
             highlightthickness=0,
@@ -51,6 +55,7 @@ class PopView:
 
         image_image_1 = PhotoImage(
             file=relative_to_assets("frame5/image_1.png"))
+        
         image_1 = canvas.create_image(
             165.0,
             33.0,
@@ -64,7 +69,9 @@ class PopView:
             34.0,
             image=entry_image_1
         )
+
         entry_1 = Entry(
+            self.window,
             bd=0,
             bg="#F5F5F5",
             fg="#000716",
@@ -93,5 +100,6 @@ class PopView:
             103.0,
             fill="#003B73",
             outline="")
+        canvas.pack()
         self.window.resizable(False, False)
         self.window.mainloop()

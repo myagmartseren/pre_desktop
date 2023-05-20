@@ -1,4 +1,4 @@
-from tkinter import Canvas, Entry, Tk, Button, PhotoImage, StringVar, filedialog
+from tkinter import Canvas, Entry, Tk, Button, PhotoImage, StringVar, filedialog, Frame, Toplevel
 from utils import relative_to_assets, relative_to_files
 from .pop import PopView
 from cryptography.fernet import Fernet
@@ -7,9 +7,9 @@ files =  list()
 for i in range(9):
     files.append("Файл нэр")
 
-class MainView:
-    def __init__(self, main):
-        self.window = main
+class MainView(Frame):
+    def __init__(self, root):
+        self.window = root
         self.files = files
         self.file_names = list()
         self.file_buttons = list()
@@ -179,7 +179,8 @@ class MainView:
 
         #region User
         self.username = StringVar()
-        self.username.set("Хэрэглэгч")
+        import main
+        self.username.set(main.current_user.username)
 
         username_image = PhotoImage(
             file=relative_to_assets("main/username.png"))
@@ -350,26 +351,25 @@ class MainView:
         self.window.mainloop()
         #endregion GUI Home
     def open_pop_view(self):
-        PopView(Tk())
+        pop_window =Toplevel(self.window) 
+        PopView(pop_window)
 
     def open_file(self):
         # Open the file dialog.
-        # filetypes = (("All files", "*.txt"))
-        filename = filedialog.askopenfilename(title="Select a file", initialdir="/")
-
-        # Display the file name in the label.
-        # label.config(text=filename)
+        file_path = filedialog.askopenfilename(title="Select a file", initialdir="/home")
+        
+        filename = file_path.split("/")[-1]
 
         # Get the file contents.
-        with open(filename, "rb") as f:
+        with open(file_path, "rb") as f:
             contents = f.read()
+
         key = Fernet.generate_key()
-        f =Fernet(key)
+        f = Fernet(key)
         encrypted_contents = f.encrypt(contents)
         
         # Save the encrypted file contents to a new file.
-        import os 
-        file_path = os.path.join("../files", "encrypted_"+filename)
-
-        with open(file_path, "wb") as f:
+        relative_path = relative_to_files(filename)
+        with open(relative_path, "wb") as f:
             f.write(encrypted_contents)
+        

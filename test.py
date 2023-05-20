@@ -1,33 +1,18 @@
-import tkinter as tk
-from tkinter import filedialog
+from cryptography.fernet import *
 
-root = tk.Tk()
+# Generate a random key
+key = Fernet.generate_key()
+print(key)
+# Encrypt the file
+with open("image.png", "rb") as file:
+  file_data = file.read()
 
-# Define the open_file() function.
-def open_file():
-    # Get the file name from the text entry box.
-    filename = entry.get()
+encrypted_file_data = Fernet(key).encrypt(file_data)
 
-    # Open the file dialog.
-    filetypes = (("Text files", "*.txt"), ("All files", "*.*"))
-    filename = filedialog.askopenfilename(title="Select a file", initialdir="/", filetypes=filetypes)
+# Write the encrypted file
+with open("encrypted_file.txt", "wb") as file:
+  file.write(encrypted_file_data)
 
-    # Display the file name in the label.
-    label.config(text=filename)
-
-# Create a label to display the file name.
-label = tk.Label(root, text="File name:")
-
-# Create a text entry box to enter the file name.
-entry = tk.Entry(root)
-
-# Create a button to open the file browser.
-button = tk.Button(root, text="Open", command=open_file)
-
-# Layout the widgets.
-label.grid(row=0, column=0)
-entry.grid(row=0, column=1)
-button.grid(row=1, column=0)
-
-# Start the main loop.
-root.mainloop()
+# Save the key
+with open("key.txt", "wb") as file:
+  file.write(key)

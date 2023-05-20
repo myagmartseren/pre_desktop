@@ -357,7 +357,7 @@ class MainView(Frame):
     def open_file(self):
         # Open the file dialog.
         file_path = filedialog.askopenfilename(title="Select a file", initialdir="/home")
-        
+
         filename = file_path.split("/")[-1]
 
         # Get the file contents.
@@ -372,4 +372,5 @@ class MainView(Frame):
         relative_path = relative_to_files(filename)
         with open(relative_path, "wb") as f:
             f.write(encrypted_contents)
+        
         

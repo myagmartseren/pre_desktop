@@ -1,7 +1,7 @@
 from tkinter import Canvas, Entry, Button, PhotoImage, messagebox
 from utils import relative_to_assets
 import api
-from .home import MainView
+from .home import HomeView
 from .register import RegisterView
 from models import User
 
@@ -155,4 +155,4 @@ class LoginView:
         RegisterView(self.window)
 
     def open_home_view(self):
-        MainView(self.window)
+        HomeView(self.window)

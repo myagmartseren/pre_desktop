@@ -1,14 +1,23 @@
-from tkinter import Canvas, Entry, Tk, Button, PhotoImage, StringVar, filedialog, Frame, Toplevel
+import uuid
+from tkinter import Canvas, Entry, Tk, Button, PhotoImage, StringVar, filedialog, Frame, Toplevel, messagebox
 from utils import relative_to_assets, relative_to_files
 from .pop import PopView
 from cryptography.fernet import Fernet
+import models
+import api
+from umbral import (SecretKey, Signer, CapsuleFrag, encrypt, PublicKey)
+from functools import partial
 
-files =  list()
-for i in range(9):
-    files.append("Файл нэр")
 
-class MainView(Frame):
+class HomeView(Frame):
     def __init__(self, root):
+        super().__init__(root)
+        files =  list()
+        temp_files = api.get_files()
+        if temp_files:
+            for file in temp_files: 
+                files.append(file)
+
         self.window = root
         self.files = files
         self.file_names = list()
@@ -38,7 +47,7 @@ class MainView(Frame):
             outline="")
 
         background_image = PhotoImage(
-            file=relative_to_assets("main/background.png"))
+            file=relative_to_assets("home/background.png"))
         image_1 = canvas.create_image(
             880.0,
             603.0,
@@ -47,36 +56,39 @@ class MainView(Frame):
         #endregion Frame
 
         #region Files
-        file_image = PhotoImage(file=relative_to_assets("main/file.png"))
+        file_image = PhotoImage(file=relative_to_assets("home/file.png"))
         x = 443.0
         y = 278.0
         for i in range(3):
             for j in range(3):
-                if i*3+j<= len(self.files):
+                if i*3+j< len(self.files):
                     self.file_names.append(StringVar())
-                    self.file_names[i*3+j].set(self.files[i*3+j])
-
+                    self.file_names[i*3+j].set(self.files[i*3+j].get("name"))
                     self.file_buttons.append(Button(
                         image=file_image,
                         borderwidth=0,
                         highlightthickness=0,
-                        command=self.open_pop_view,
+                        # command=self.open_pop_view(self.files[i*3+j].get("id")),
+                        command=partial(self.open_pop_view, self.files[i*3+j].get("id")),
                         relief="flat",
                         textvariable=self.file_names[i*3+j],
                         compound="center",
+                        # text=self.files[i*3+j].get("id"),
                     ))
                     self.file_buttons[i*3+j].place(
-                        x=x+300*i,
-                        y=y+227*j,
+                        x=x+300*j,
+                        y=y+227*i,
                         width=282.0,
                         height=195.0
                     )
+                else:
+                    break
         #endregion Files
 
         #region Left Bar
         #region shared files
         shared_image = PhotoImage(
-            file=relative_to_assets("main/shared_files.png"))
+            file=relative_to_assets("home/shared_files.png"))
         shared_button = Button(
             image=shared_image,
             borderwidth=0,
@@ -95,7 +107,7 @@ class MainView(Frame):
 
         #region shared with me files
         shared_with_me_image = PhotoImage(
-            file=relative_to_assets("main/shared_with_me_files.png"))
+            file=relative_to_assets("home/shared_with_me_files.png"))
         shared_with_me_button = Button(
             image=shared_with_me_image,
             borderwidth=0,
@@ -113,7 +125,7 @@ class MainView(Frame):
 
         #region My files
         my_files_image = PhotoImage(
-            file=relative_to_assets("main/my_files.png"))
+            file=relative_to_assets("home/my_files.png"))
         my_files_button = Button(
             image=my_files_image,
             borderwidth=0,
@@ -131,7 +143,7 @@ class MainView(Frame):
 
         #region New File
         new_file_image = PhotoImage(
-            file=relative_to_assets("main/new_file.png"))
+            file=relative_to_assets("home/new_file.png"))
         new_file_button = Button(
             image=new_file_image,
             borderwidth=0,
@@ -149,7 +161,7 @@ class MainView(Frame):
 
         #region Logo
         logo_image = PhotoImage(
-            file=relative_to_assets("main/logo.png"))
+            file=relative_to_assets("home/logo.png"))
         logo_canvas = canvas.create_image(
             126.0,
             126.0,
@@ -161,12 +173,12 @@ class MainView(Frame):
         #region Top bar
         #region Logout
         logout_image = PhotoImage(
-            file=relative_to_assets("main/logout.png"))
+            file=relative_to_assets("home/logout.png"))
         logout_button = Button(
             image=logout_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("main/button_14 clicked"),
+            command=self.logout,
             relief="flat"
         )
         logout_button.place(
@@ -183,7 +195,7 @@ class MainView(Frame):
         self.username.set(main.current_user.username)
 
         username_image = PhotoImage(
-            file=relative_to_assets("main/username.png"))
+            file=relative_to_assets("home/username.png"))
         username_button = Button(
             image=username_image,
             borderwidth=0,
@@ -207,7 +219,7 @@ class MainView(Frame):
 
         #region Search background
         search_image = PhotoImage(
-            file=relative_to_assets("main/search.png"))
+            file=relative_to_assets("home/search.png"))
         search_canva = canvas.create_image(
             691.0,
             115.0,
@@ -217,7 +229,7 @@ class MainView(Frame):
 
         #region Search entry
         search_entry_image = PhotoImage(
-            file=relative_to_assets("main/search_entry.png"))
+            file=relative_to_assets("home/search_entry.png"))
         search_entry_bg = canvas.create_image(
             706.5,
             114.5,
@@ -245,7 +257,7 @@ class MainView(Frame):
         page1.set("1")
 
         page_image_1 = PhotoImage(
-            file=relative_to_assets("main/page_1.png"))
+            file=relative_to_assets("home/page_1.png"))
         page_button_1 = Button(
             image=page_image_1,
             borderwidth=0,
@@ -279,7 +291,7 @@ class MainView(Frame):
         btn_text.set("2")
 
         page_image_2 = PhotoImage(
-            file=relative_to_assets("main/page_2.png"))
+            file=relative_to_assets("home/page_2.png"))
         page_button_2 = Button(
             image=page_image_2,
             borderwidth=0,
@@ -301,7 +313,7 @@ class MainView(Frame):
 
         #region Pager 3
         # button_image_16 = PhotoImage(
-        #     file=relative_to_assets("main/button_16.png"))
+        #     file=relative_to_assets("home/button_16.png"))
         # button_16 = Button(
         #     image=button_image_16,
         #     borderwidth=0,
@@ -350,9 +362,15 @@ class MainView(Frame):
         self.window.resizable(False, False)
         self.window.mainloop()
         #endregion GUI Home
-    def open_pop_view(self):
+    def open_pop_view(self,id):
         pop_window =Toplevel(self.window) 
-        PopView(pop_window)
+        PopView(pop_window,id)
+    def logout(self):
+        if api.logout():
+            from .login import LoginView
+            LoginView(self.window)
+        else:
+            messagebox.showinfo("Pop-up Message", "failed to logout")
 
     def open_file(self):
         # Open the file dialog.
@@ -363,14 +381,29 @@ class MainView(Frame):
         # Get the file contents.
         with open(file_path, "rb") as f:
             contents = f.read()
-
+        
+        generated_uuid = uuid.uuid4()
         key = Fernet.generate_key()
         f = Fernet(key)
         encrypted_contents = f.encrypt(contents)
+
+        import main
+        capsule, encrypted_key = encrypt(PublicKey._from_exact_bytes(bytes.fromhex(main.current_user.public_key)), key) 
         
         # Save the encrypted file contents to a new file.
-        relative_path = relative_to_files(filename)
-        with open(relative_path, "wb") as f:
+        # temp_path = relative_to_files(str(generated_uuid))
+        temp_path = f"/tmp/{str(generated_uuid)}"
+        with open(temp_path, "wb") as f:
             f.write(encrypted_contents)
         
-        
+        new_file = api.add_file(models.File({
+            "ower_id": main.current_user.id,
+            "name": filename,
+            "key": encrypted_key,
+            "capsule":capsule.__bytes__(),
+            "path":temp_path,
+            }))
+        if new_file:
+            messagebox.showinfo("Pop-up Message", "Successfully add file")
+        else:
+            messagebox.showinfo("Pop-up Message", "failed add file")

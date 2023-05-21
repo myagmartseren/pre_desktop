@@ -1,9 +1,16 @@
 from utils import relative_to_assets
-from tkinter import Canvas, Entry, Button, PhotoImage
+from tkinter import Canvas, Entry, Button, PhotoImage, messagebox 
+import api
+from cryptography.fernet import Fernet
 
 class PopView:
-    def __init__(self, main):
-        self.window = main
+    def __init__(self, root,id):
+        self.file = api.get_file(id)
+        if self.file == None:
+            messagebox.showerror("Error", "failed get file")
+            return
+        print(self.file,self.file.keys())
+        self.window = root
         self.window.geometry("423x299")
         self.window.configure(bg = "#FFFFFF")
         self.window.title("File")
@@ -20,16 +27,16 @@ class PopView:
 
         canvas.place(x = 0, y = 0)
         button_image_1 = PhotoImage(file=relative_to_assets("frame5/button_1.png"))
-        button_1 = Button(
+        decrypt_button = Button(
             self.window,
             image=button_image_1,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_1 clicked"),
+            command=self.decrypt,
             relief="flat"
         )
 
-        button_1.place(
+        decrypt_button.place(
             x=33.0,
             y=238.0,
             width=363.0,
@@ -38,15 +45,15 @@ class PopView:
 
         button_image_2 = PhotoImage(
             file=relative_to_assets("frame5/button_2.png"))
-        button_2 = Button(
+        share_button = Button(
             self.window,
             image=button_image_2,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_2 clicked"),
+            command=self.share,
             relief="flat"
         )
-        button_2.place(
+        share_button.place(
             x=311.0,
             y=15.0,
             width=85.0,
@@ -70,14 +77,14 @@ class PopView:
             image=entry_image_1
         )
 
-        entry_1 = Entry(
+        email_entry = Entry(
             self.window,
             bd=0,
             bg="#F5F5F5",
             fg="#000716",
             highlightthickness=0
         )
-        entry_1.place(
+        email_entry.place(
             x=38.0,
             y=19.0,
             width=253.0,
@@ -100,6 +107,28 @@ class PopView:
             103.0,
             fill="#003B73",
             outline="")
+        
         canvas.pack()
         self.window.resizable(False, False)
         self.window.mainloop()
+    
+    def decrypt(self):
+        from tkinter import filedialog
+        directory = filedialog.askdirectory()
+        cipher = api.download_file(self.file.get("path"))
+        from umbral import (SecretKey, Signer, CapsuleFrag,Capsule, decrypt_original)
+        import main
+        capsule_hex = self.file.get("capsule").replace('\\x', '').replace(' ', '')
+        capsule_bytes = bytes.fromhex(capsule_hex)
+
+        key_hex = self.file.get("key").replace('\\x', '').replace(' ', '')
+        key_bytes = bytes.fromhex(key_hex)
+
+        key = decrypt_original(SecretKey.from_bytes(main.private_key),Capsule.from_bytes(capsule_bytes), key_bytes)
+        plaincontent = Fernet(key).decrypt(cipher)
+        with open(f"{directory}/{self.file.get('name')}","wb") as f:
+            f.write(plaincontent)
+
+    def share(self):
+        print("share button")
+        pass

@@ -419,5 +419,6 @@ class HomeView(Frame):
             }))
         if new_file:
             messagebox.showinfo("Pop-up Message", "Successfully add file")
+            self.get_files()
         else:
             messagebox.showinfo("Pop-up Message", "failed add file")

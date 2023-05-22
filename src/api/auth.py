@@ -12,11 +12,14 @@ def login(email, password):
     response = requests.post(url, json=data)
     if response.status_code == 200:
         response_data = response.json()
+        id = response_data.get('id')
+        print("logged id",id)
         access_token = response_data.get('access_token')
         username = response_data.get('username')
         public_key = response_data.get('public_key')
         if access_token and username and public_key:
             user = User({
+                "id":id,
                 "access_token":access_token,
                 "username" :username,
                 "public_key":public_key,

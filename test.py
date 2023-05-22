@@ -60,7 +60,7 @@ except ValueError:
 kfrags = generate_kfrags(delegating_sk=alices_secret_key,
                          receiving_pk=bobs_public_key,
                          signer=alices_signer,
-                         threshold=10,
+                         threshold=1,
                          shares=20)
 
 # Ursulas perform re-encryption
@@ -72,7 +72,7 @@ kfrags = generate_kfrags(delegating_sk=alices_secret_key,
 # one for each required Ursula.
 
 kfrags = random.sample(kfrags,  # All kfrags from above
-                       10)      # M - Threshold
+                       1)      # M - Threshold
 
 # Bob collects the resulting `cfrags` from several Ursulas.
 # Bob must gather at least `threshold` `cfrags` in order to open the capsule.
@@ -82,7 +82,7 @@ for kfrag in kfrags:
     cfrag = reencrypt(capsule=capsule, kfrag=kfrag)
     cfrags.append(cfrag)  # Bob collects a cfrag
 
-assert len(cfrags) == 10
+assert len(cfrags) == 1
 
 # Bob checks the capsule fragments
 # --------------------------------
@@ -99,6 +99,7 @@ cfrags = [cfrag.verify(capsule,
                        )
           for cfrag in suspicious_cfrags]
 
+print(len(cfrags))
 # Bob opens the capsule
 # ------------------------------------
 # Finally, Bob decrypts the re-encrypted ciphertext using his key.

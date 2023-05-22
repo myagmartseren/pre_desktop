@@ -65,6 +65,7 @@ class HomeView(Frame):
                     self.file_names.append(StringVar())
                     self.file_names[i*3+j].set(self.files[i*3+j].get("name"))
                     self.file_buttons.append(Button(
+                        self.window,
                         image=file_image,
                         borderwidth=0,
                         highlightthickness=0,
@@ -112,7 +113,7 @@ class HomeView(Frame):
             image=shared_with_me_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_11 clicked"),
+            command=self.get_files,
             relief="flat"
         )
         shared_with_me_button.place(
@@ -362,6 +363,11 @@ class HomeView(Frame):
         self.window.resizable(False, False)
         self.window.mainloop()
         #endregion GUI Home
+    def get_files(self,share_files = None):
+        
+        for button in self.file_buttons:
+            button.destroy()
+        pass
     def open_pop_view(self,id):
         pop_window =Toplevel(self.window) 
         PopView(pop_window,id)

@@ -11,9 +11,9 @@ from umbral import (
 alices_secret_key = SecretKey.random()
 alices_public_key = alices_secret_key.public_key()
 
-alices_signing_key = SecretKey.random()
-alices_verifying_key = alices_signing_key.public_key()
-alices_signer = Signer(alices_signing_key)
+# alices_signing_key = SecretKey.random()
+# alices_verifying_key = alices_signing_key.public_key()
+alices_signer = Signer(alices_secret_key)
 
 # Encrypt some data for Alice
 # ---------------------------
@@ -60,7 +60,7 @@ except ValueError:
 kfrags = generate_kfrags(delegating_sk=alices_secret_key,
                          receiving_pk=bobs_public_key,
                          signer=alices_signer,
-                         threshold=1,
+                         threshold=10,
                          shares=20)
 
 # Ursulas perform re-encryption
@@ -72,7 +72,7 @@ kfrags = generate_kfrags(delegating_sk=alices_secret_key,
 # one for each required Ursula.
 
 kfrags = random.sample(kfrags,  # All kfrags from above
-                       1)      # M - Threshold
+                       10)      # M - Threshold
 
 # Bob collects the resulting `cfrags` from several Ursulas.
 # Bob must gather at least `threshold` `cfrags` in order to open the capsule.
@@ -82,7 +82,7 @@ for kfrag in kfrags:
     cfrag = reencrypt(capsule=capsule, kfrag=kfrag)
     cfrags.append(cfrag)  # Bob collects a cfrag
 
-assert len(cfrags) == 1
+assert len(cfrags) == 10
 
 # Bob checks the capsule fragments
 # --------------------------------
@@ -93,13 +93,12 @@ assert len(cfrags) == 1
 suspicious_cfrags = [CapsuleFrag.from_bytes(bytes(cfrag)) for cfrag in cfrags]
 
 cfrags = [cfrag.verify(capsule,
-                       verifying_pk=alices_verifying_key,
+                       verifying_pk=alices_public_key,
                        delegating_pk=alices_public_key,
                        receiving_pk=bobs_public_key,
                        )
           for cfrag in suspicious_cfrags]
 
-print(len(cfrags))
 # Bob opens the capsule
 # ------------------------------------
 # Finally, Bob decrypts the re-encrypted ciphertext using his key.

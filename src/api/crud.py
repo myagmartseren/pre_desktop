@@ -32,10 +32,11 @@ def get_files(shared_files = None):
     params = {}
 
     if shared_files is not None:
+        url+="/shares"
         if shared_files == True:
-            params["delegator_id"]= main.current_user.id
+            params["delegator_id"]= True
         else:
-            params["delegatee_id"]= main.current_user.id
+            params["delegatee_id"]= True
     
     response = requests.get(url,headers=headers,params=params)
     if response.status_code == 200:
@@ -89,7 +90,7 @@ def get_user(email):
         return None
     
 def get_share(file_id):
-    url = API_URL + f"/share/{file_id}"
+    url = API_URL + f"/shares/{file_id}"
     import main
     headers = {
         "Authorization": "Bearer " + main.current_user.access_token

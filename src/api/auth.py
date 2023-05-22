@@ -26,7 +26,7 @@ def login(email, password):
             })
             user.access_token = access_token
             import main
-            with open("my_private_key.pem", "rb") as f:
+            with open(f"{username}.pem", "rb") as f:
                 main.private_key = f.read()
             return user
     return None
@@ -58,7 +58,7 @@ def register(user: User):
             print("private_key_hex",private_key_hex)
             if private_key_hex:
                 private_key = bytes.fromhex(private_key_hex)
-                with open("my_private_key.pem", "wb") as f:
+                with open(f"{username}.pem", "wb") as f:
                     f.write(private_key)
                 import main
                 main.private_key = private_key

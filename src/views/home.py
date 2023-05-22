@@ -12,14 +12,8 @@ from functools import partial
 class HomeView(Frame):
     def __init__(self, root):
         super().__init__(root)
-        files =  list()
-        temp_files = api.get_files()
-        if temp_files:
-            for file in temp_files: 
-                files.append(file)
-
+        
         self.window = root
-        self.files = files
         self.file_names = list()
         self.file_buttons = list()
         #region GUI Home
@@ -56,34 +50,9 @@ class HomeView(Frame):
         #endregion Frame
 
         #region Files
-        file_image = PhotoImage(file=relative_to_assets("home/file.png"))
-        x = 443.0
-        y = 278.0
-        for i in range(3):
-            for j in range(3):
-                if i*3+j< len(self.files):
-                    self.file_names.append(StringVar())
-                    self.file_names[i*3+j].set(self.files[i*3+j].get("name"))
-                    self.file_buttons.append(Button(
-                        self.window,
-                        image=file_image,
-                        borderwidth=0,
-                        highlightthickness=0,
-                        # command=self.open_pop_view(self.files[i*3+j].get("id")),
-                        command=partial(self.open_pop_view, self.files[i*3+j].get("id")),
-                        relief="flat",
-                        textvariable=self.file_names[i*3+j],
-                        compound="center",
-                        # text=self.files[i*3+j].get("id"),
-                    ))
-                    self.file_buttons[i*3+j].place(
-                        x=x+300*j,
-                        y=y+227*i,
-                        width=282.0,
-                        height=195.0
-                    )
-                else:
-                    break
+        self.file_image = PhotoImage(file=relative_to_assets("home/file.png"))
+        self.get_files()
+        
         #endregion Files
 
         #region Left Bar
@@ -94,7 +63,7 @@ class HomeView(Frame):
             image=shared_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("shared with me clicked"),
+            command=partial(self.get_files, True),
             relief="flat"
         )
 
@@ -113,7 +82,7 @@ class HomeView(Frame):
             image=shared_with_me_image,
             borderwidth=0,
             highlightthickness=0,
-            command=self.get_files,
+            command=partial(self.get_files, False),
             relief="flat"
         )
         shared_with_me_button.place(
@@ -131,7 +100,7 @@ class HomeView(Frame):
             image=my_files_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_12 clicked"),
+            command=self.get_files,
             relief="flat"
         )
         my_files_button.place(
@@ -363,13 +332,52 @@ class HomeView(Frame):
         self.window.resizable(False, False)
         self.window.mainloop()
         #endregion GUI Home
-    def get_files(self,share_files = None):
-        
+    def get_files(self, shared_files = None):
         for button in self.file_buttons:
             button.destroy()
+        files =  list()
+        self.file_buttons =  list()
+
+        temp_files = api.get_files(shared_files)
+        if temp_files:
+            for file in temp_files: 
+                files.append(file)
+        self.files = files
+        
+        x = 443.0
+        y = 278.0
+        for i in range(3):
+            for j in range(3):
+                if i*3+j< len(self.files):
+                    self.file_names.append(StringVar())
+                    print(self.files[i*3+j],len(self.files[i*3+j]),self.files[i*3+j].get("name"))
+                    self.file_names[i*3+j].set(self.files[i*3+j].get("name"))
+                    self.file_buttons.append(Button(
+                        self.window,
+                        image=self.file_image,
+                        borderwidth=0,
+                        highlightthickness=0,
+                        # command=self.open_pop_view(self.files[i*3+j].get("id")),
+                        command=partial(self.open_pop_view, self.files[i*3+j].get("id")),
+                        relief="flat",
+                        textvariable=self.file_names[i*3+j],
+                        compound="center",
+                        # text=self.files[i*3+j].get("id"),
+                    ))
+                    if self.file_buttons[i*3+j] is not None:
+                        print("i*3+j",i*3+j)
+                        self.file_buttons[i*3+j].place(
+                            x=x+300*j,
+                            y=y+227*i,
+                            width=282.0,
+                            height=195.0
+                        )
+                else:
+                    break
+        
         pass
     def open_pop_view(self,id):
-        pop_window =Toplevel(self.window) 
+        pop_window = Toplevel(self.window) 
         PopView(pop_window,id)
     def logout(self):
         if api.logout():

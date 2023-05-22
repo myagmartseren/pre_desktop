@@ -121,26 +121,36 @@ class PopView:
         capsule_bytes = bytes.fromhex(capsule_hex)
         key_hex = self.file.get("key").replace('\\x', '').replace(' ', '')
         key_bytes = bytes.fromhex(key_hex)
-        if self.file.owner == main.current_user.id:    
+        if self.file.get("owner_id") == main.current_user.id:    
             key = decrypt_original(SecretKey.from_bytes(main.private_key),Capsule.from_bytes(capsule_bytes), key_bytes)
         else:
             share = api.get_share(self.file.get("id"))
-
+            if share is None:
+                messagebox.showerror("Error Get Share","Share avahad aldaa garlaa")
+                return
+            
             cfrag = share.get("rekey").replace('\\x', '').replace(' ', '')
             cfrag_bytes = bytes.fromhex(cfrag)
             
             delegator_user = api.get_user(share.get("delegator_id"))
-
+            if delegator_user is None:
+                messagebox.showerror("Error Get delegator_user","delegator_user avahad aldaa garlaa")
+                return
+            Capsule.from_bytes(capsule_bytes)
+            delegator_user.get("signer_key")
 
             suspicious_cfrag = CapsuleFrag.from_bytes(bytes(cfrag_bytes))
+            delegating_pk = PublicKey.from_bytes(bytes.fromhex(delegator_user.get("public_key")))
+            # verifying_pk=PublicKey.from_bytes(bytes.fromhex(delegator_user.get("signer_key")))
+
             cfrags = suspicious_cfrag.verify(Capsule.from_bytes(capsule_bytes),
-                       verifying_pk=delegator_user.get("signer_key"),
-                       delegating_pk=delegator_user.get("public_key"),
-                       receiving_pk=main.current_user.public_key,
+                       verifying_pk=delegating_pk,
+                       delegating_pk=delegating_pk,
+                       receiving_pk=PublicKey.from_bytes(bytes.fromhex(main.current_user.public_key)),
                        )
-            key = decrypt_reencrypted(receiving_sk=main.private_key,
-                                    delegating_pk=delegator_user.get("public_key"),
-                                    capsule=capsule_bytes,
+            key = decrypt_reencrypted(receiving_sk=SecretKey.from_bytes(main.private_key),
+                                    delegating_pk=delegating_pk,
+                                    capsule=Capsule.from_bytes(capsule_bytes),
                                     verified_cfrags=[cfrags],
                                     ciphertext=key_bytes)
         plaincontent = Fernet(key).decrypt(cipher)
@@ -154,11 +164,9 @@ class PopView:
         if user == None:
             messagebox.showerror("Error", "failed get user")
             return
-        print("after get user",user)
         capsule_hex = self.file.get("capsule").replace('\\x', '').replace(' ', '')
         capsule_bytes = bytes.fromhex(capsule_hex)
 
-        print("user_pub key", user.get("public_key"))        
         user_pk_hex =user.get("public_key").replace('\\x', '').replace(' ', '')
         user_pk_bytes = bytes.fromhex(user_pk_hex)
 
@@ -167,8 +175,8 @@ class PopView:
                          signer=Signer(SecretKey.from_bytes(main.private_key)),
                          threshold=1,
                          shares=20)
+        
         cfrag = reencrypt(capsule=Capsule.from_bytes(capsule_bytes), kfrag=kfrags[0])
-        print("delegator id ",main.current_user.id, main.current_user)
         if api.add_share(Share({
         "file_id":self.file.get("id"),
         "delegator_id": main.current_user.id,

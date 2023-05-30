@@ -2,11 +2,9 @@
 from tkinter import Canvas, Entry, Button, PhotoImage, messagebox, Frame
 from utils import relative_to_assets
 import api
-
 from umbral import (SecretKey, Signer,PublicKey, CapsuleFrag,Capsule,encrypt, decrypt_original,decrypt_reencrypted, generate_kfrags,reencrypt)
 
 from cryptography.fernet import Fernet
-
 from models import * 
 
 class PopView(Frame):
@@ -15,7 +13,6 @@ class PopView(Frame):
         if self.file == None:
             messagebox.showerror("Error", "failed get file")
             return
-        print(self.file,self.file.keys())
         self.window = root
         self.window.geometry("423x299")
         self.window.configure(bg = "#FFFFFF")
@@ -176,10 +173,11 @@ class PopView(Frame):
         user_pk_bytes = bytes.fromhex(user_pk_hex)
 
         kfrags = generate_kfrags(delegating_sk=SecretKey.from_bytes(main.private_key),
-                         receiving_pk=PublicKey.from_bytes(user_pk_bytes),
-                         signer=Signer(SecretKey.from_bytes(main.private_key)),
-                         threshold=1,
-                         shares=20)
+        receiving_pk=PublicKey.from_bytes(user_pk_bytes),
+        
+        signer=Signer(SecretKey.from_bytes(main.private_key)),
+            threshold=1,
+            shares=20)
         
         cfrag = reencrypt(capsule=Capsule.from_bytes(capsule_bytes), kfrag=kfrags[0])
         if api.add_share(Share({
@@ -187,7 +185,6 @@ class PopView(Frame):
         "delegator_id": main.current_user.id,
         'delegatee_id': user.get("id"),
         "rekey":cfrag.__bytes__()})):
-            messagebox.showerror("Success", "success")
-            
+            messagebox.showinfo("Success", "success")
         else:
             messagebox.showerror("Error", "failed get user")

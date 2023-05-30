@@ -13,7 +13,6 @@ def login(email, password):
     if response.status_code == 200:
         response_data = response.json()
         id = response_data.get('id')
-        print("logged id",id)
         access_token = response_data.get('access_token')
         username = response_data.get('username')
         public_key = response_data.get('public_key')
@@ -53,7 +52,6 @@ def register(user: User):
             user.access_token = access_token
             main.current_user=user
             private_key_hex = response_data.get('private_key')
-            print("private_key_hex",private_key_hex)
             if private_key_hex:
                 private_key = bytes.fromhex(private_key_hex)
                 with open(f"{username}.pem", "wb") as f:

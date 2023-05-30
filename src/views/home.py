@@ -122,6 +122,7 @@ class HomeView(Frame):
             command=self.open_file,
             relief="flat"
         )
+
         new_file_button.place(
             x=53.0,
             y=191.0,
@@ -311,28 +312,32 @@ class HomeView(Frame):
 
         #endregion Pager
 
+        desc_logo = PhotoImage(
+            file=relative_to_assets("home/image_2.png"))
         #region empty
-        # image_image_2 = PhotoImage(
-        #     file=relative_to_assets("frame1/image_2.png"))
-        # image_2 = canvas.create_image(
-        #     817.0,
-        #     402.0,
-        #     image=image_image_2
-        # )
-        # canvas.create_text(
-        #     481.0,
-        #     467.0,
-        #     anchor="nw",
-        #     text="Аюулгүй фаил хуваалцах үйлчилгээ",
-        #     fill="#003B73",
-        #     font=("Inter Bold", 50 * -1)
-        # )
-
+        if len(self.files) == 0:
+            canvas.create_image(
+                817.0,
+                402.0,
+                image=desc_logo
+            )
+            description = canvas.create_text(
+                481.0,
+                467.0,
+                anchor="nw",
+                text="Аюулгүй фаил хуваалцах \n \tүйлчилгээ",
+                fill="#003B73",
+                font=("Inter Bold", 50 * -1)
+            )
+        else:
+            canvas.delete(description)
+            canvas.delete(desc_logo)
         #endregion empty
 
         self.window.resizable(False, False)
         self.window.mainloop()
         #endregion GUI Home
+
     def get_files(self, shared_files = None):
         for button in self.file_buttons:
             button.destroy()
@@ -351,14 +356,12 @@ class HomeView(Frame):
             for j in range(3):
                 if i*3+j< len(self.files):
                     self.file_names.append(StringVar())
-                    print(self.files[i*3+j],len(self.files[i*3+j]),self.files[i*3+j].get("name"))
                     self.file_names[i*3+j].set(self.files[i*3+j].get("name"))
                     self.file_buttons.append(Button(
                         self.window,
                         image=self.file_image,
                         borderwidth=0,
                         highlightthickness=0,
-                        # command=self.open_pop_view(self.files[i*3+j].get("id")),
                         command=partial(self.open_pop_view, self.files[i*3+j].get("id")),
                         relief="flat",
                         textvariable=self.file_names[i*3+j],
@@ -366,7 +369,6 @@ class HomeView(Frame):
                         # text=self.files[i*3+j].get("id"),
                     ))
                     if self.file_buttons[i*3+j] is not None:
-                        print("i*3+j",i*3+j)
                         self.file_buttons[i*3+j].place(
                             x=x+300*j,
                             y=y+227*i,
@@ -375,8 +377,7 @@ class HomeView(Frame):
                         )
                 else:
                     break
-        
-        pass
+
     def open_pop_view(self,id):
         pop_window = Toplevel(self.window) 
         from .pop import PopView
@@ -393,33 +394,14 @@ class HomeView(Frame):
 
     def open_file(self):
         file_path = filedialog.askopenfilename(title="Select a file", initialdir="/home")
-
         filename = file_path.split("/")[-1]
         with open(file_path, "rb") as f:
-            contents = f.read()
-        
-        generated_uuid = uuid.uuid4()
-        key = Fernet.generate_key()
-        f = Fernet(key)
-        encrypted_contents = f.encrypt(contents)
+            data = f.read()
+        from  encryption import file_encrypt
+        check = api.add_file(file_encrypt(data,filename))
 
-        import main
-        capsule, encrypted_key = encrypt(PublicKey._from_exact_bytes(bytes.fromhex(main.current_user.public_key)), key) 
-        
-        temp_path = f"/tmp/{str(generated_uuid)}"
-        with open(temp_path, "wb") as f:
-            f.write(encrypted_contents)
-        
-        new_file = api.add_file(File({
-            "ower_id": main.current_user.id,
-            "name": filename,
-            "key": encrypted_key,
-            "capsule":capsule.__bytes__(),
-            "path":temp_path,
-            }))
-
-        if new_file:
-            messagebox.showinfo("Pop-up Message", "Successfully add file")
+        if check:
+            messagebox.showinfo("Message", "Ажилттай файл байршууллаа.")
             self.get_files()
         else:
-            messagebox.showerror("Pop-up Message", "failed add file")
+            messagebox.showerror("Алдаа", "Файл байршуулхад алдаа гарлаа.")

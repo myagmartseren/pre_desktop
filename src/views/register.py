@@ -255,13 +255,13 @@ class RegisterView(Frame):
             messagebox.showerror("Алдаа","Имейл хаяг хоосон байна!")
             return           
         
-        if password == password_confirm:
+        if password != password_confirm:
             messagebox.showerror("Алдаа","Нууц үг таарахгүй байна!")
             return
         
         if api.register(user=User({"email": email, "password": password, "username":self.username_entry.get()})):
-            pass
-            # HomeView(self.window)
+            from .home import HomeView
+            HomeView(self.window)
         else:
             messagebox.showerror("Error", "failed to register")
     def cancel_action(self):

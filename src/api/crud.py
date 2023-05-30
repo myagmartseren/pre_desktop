@@ -76,7 +76,6 @@ def download_file(path):
 def get_user(email):
     url = API_URL + f"/users/{email}"
     import main
-    print("token is here",main.current_user.access_token)
     headers = {
         "Authorization": "Bearer " + main.current_user.access_token
     }

@@ -1,5 +1,4 @@
 from pathlib import Path
-
 OUTPUT_PATH = Path(__file__).parent
 
 def relative_to_assets(path: str) -> Path:

@@ -4,7 +4,6 @@ class User:
         self.email = values.get("email")
         self.public_key = values.get("public_key")
         self.signer_key = values.get("signer_key")
-
         self.password = values.get("password")
         self.username = values.get("username")
         self.access_token = values.get("access_token")

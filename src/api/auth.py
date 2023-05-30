@@ -36,8 +36,6 @@ def register(user: User):
     url = API_URL + "/auth/register"
     data = {
         "username": user.username,
-        "firstname": user.firstname,
-        "lastname": user.lastname,
         "email": user.email,
         "password": user.password,
     }

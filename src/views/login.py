@@ -8,7 +8,7 @@ from models import User
 class LoginView:
     def __init__(self,main):
         self.window = main
-        self.window.title('Нэвтрэх')
+        self.window.title()
         self.window.geometry("1440x1024")
         self.window.configure(bg = "#ADD8E6")
         #region GUI
@@ -23,21 +23,30 @@ class LoginView:
         )
 
         canvas.place(x = 0, y = 0)
-        logo_bg_img = PhotoImage(file=relative_to_assets("frame0/image_1.png"))
+        logo_bg_img = PhotoImage(file=relative_to_assets("login/logo_bg.png"))
         logo_canva = canvas.create_image(720.0,512.0,image=logo_bg_img)
 
-        bg_frame = PhotoImage(file=relative_to_assets("frame0/image_2.png"))
-        bg_image = canvas.create_image(660.0,491.0,image=bg_frame)
+        frame_bg = PhotoImage(file=relative_to_assets("login/frame_bg.png"))
+        bg_image = canvas.create_image(660.0,491.0,image=frame_bg)
 
-        login_image = PhotoImage(file=relative_to_assets("frame0/button_1.png"))
+        #region Login Button
+        login_btn_img = PhotoImage(file=relative_to_assets("login/btn_login.png"))
+        login_btn_img_hvr = PhotoImage(file=relative_to_assets("login/btn_login_hover.png"))
+        
+        def login_on_enter(event):
+            login_button.configure(image=login_btn_img_hvr)
+
+        def login_on_leave(event):
+            login_button.configure(image=login_btn_img)
+
         login_button = Button(
-            image=login_image,
+            image=login_btn_img,
             borderwidth=0,
             highlightthickness=0,
             command=self.login,
             relief="flat"
         )
-
+       
         login_button.place(
             x=458.0,
             y=537.0,
@@ -45,7 +54,11 @@ class LoginView:
             height=53.0
         )
 
-        register_img = PhotoImage(file=relative_to_assets("frame0/button_2.png"))
+        login_button.bind("<Enter>", login_on_enter)
+        login_button.bind("<Leave>", login_on_leave)
+        #endregion Login Button
+
+        register_img = PhotoImage(file=relative_to_assets("login/btn_register.png"))
         register_button = Button(
             image=register_img,
             borderwidth=0,
@@ -61,14 +74,14 @@ class LoginView:
             height=53.0
         )
 
-        image_image_3 = PhotoImage(file=relative_to_assets("frame0/image_3.png"))
+        image_image_3 = PhotoImage(file=relative_to_assets("login/image_bg.png"))
         image_3 = canvas.create_image(
             660.0,
             464.0,
             image=image_image_3
         )
 
-        password_img = PhotoImage(file=relative_to_assets("frame0/entry_1.png"))
+        password_img = PhotoImage(file=relative_to_assets("login/entry.png"))
         password_bg = canvas.create_image(659.5,465.0,image=password_img)
         self.password = Entry(
             show='*',
@@ -93,7 +106,7 @@ class LoginView:
             font=("Inter SemiBold", 16 * -1)
         )
 
-        image_image_4 = PhotoImage(file=relative_to_assets("frame0/image_4.png"))
+        image_image_4 = PhotoImage(file=relative_to_assets("login/image_bg.png"))
         image_4 = canvas.create_image(
             660.0,
             347.0,
@@ -101,7 +114,7 @@ class LoginView:
         )
 
         entry_image_2 = PhotoImage(
-            file=relative_to_assets("frame0/entry_2.png"))
+            file=relative_to_assets("login/entry.png"))
         entry_bg_2 = canvas.create_image(
             659.5,
             348.0,

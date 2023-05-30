@@ -5,9 +5,8 @@ from .pop import PopView
 from cryptography.fernet import Fernet
 import models
 import api
-from umbral import (SecretKey, Signer, CapsuleFrag, encrypt, PublicKey)
+from umbral import (encrypt, PublicKey)
 from functools import partial
-
 
 class HomeView(Frame):
     def __init__(self, root):

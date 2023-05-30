@@ -12,8 +12,9 @@ from functools import partial
 class HomeView(Frame):
     def __init__(self, root):
         super().__init__(root)
-        
+ 
         self.window = root
+        self.window.title('PRE Файл хуваалцах систем')
         self.file_names = list()
         self.file_buttons = list()
         #region GUI Home

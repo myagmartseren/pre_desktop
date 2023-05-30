@@ -8,6 +8,7 @@ import tkinter as tk
 class RegisterView:
     def __init__(self, main):
         self.window = main
+        self.window.title('Бүртгүүлэх')
         self.window.geometry("1354x676")
         self.window.configure(bg="#FFFFFF")
         # region GUI

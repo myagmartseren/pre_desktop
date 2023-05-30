@@ -8,6 +8,7 @@ from models import User
 class LoginView:
     def __init__(self,main):
         self.window = main
+        self.window.title('Нэвтрэх')
         self.window.geometry("1440x1024")
         self.window.configure(bg = "#ADD8E6")
         #region GUI

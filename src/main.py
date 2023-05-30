@@ -1,5 +1,5 @@
 import tkinter as tk
-from views.login import LoginView
+from views import LoginView
 
 current_user = None
 private_key = None

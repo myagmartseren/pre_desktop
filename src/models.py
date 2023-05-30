@@ -1,8 +1,6 @@
 class User:
     def __init__(self, values: dict):
         self.id = values.get("id")
-        self.firstname = values.get("firstname")
-        self.lastname = values.get("lastname")
         self.email = values.get("email")
         self.public_key = values.get("public_key")
         self.signer_key = values.get("signer_key")

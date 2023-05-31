@@ -11,9 +11,9 @@ from umbral import (
 alices_secret_key = SecretKey.random()
 alices_public_key = alices_secret_key.public_key()
 
-# alices_signing_key = SecretKey.random()
-# alices_verifying_key = alices_signing_key.public_key()
-alices_signer = Signer(alices_secret_key)
+alices_signing_key = SecretKey.random()
+alices_verifying_key = alices_signing_key.public_key()
+alices_signer = Signer(alices_signing_key)
 
 # Encrypt some data for Alice
 # ---------------------------
@@ -93,7 +93,7 @@ assert len(cfrags) == 10
 suspicious_cfrags = [CapsuleFrag.from_bytes(bytes(cfrag)) for cfrag in cfrags]
 
 cfrags = [cfrag.verify(capsule,
-                       verifying_pk=alices_public_key,
+                       verifying_pk=alices_verifying_key,
                        delegating_pk=alices_public_key,
                        receiving_pk=bobs_public_key,
                        )

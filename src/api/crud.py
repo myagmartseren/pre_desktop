@@ -56,7 +56,7 @@ def get_file(id):
     
     if response.status_code == 200:
         response_data = response.json()
-        return response_data
+        return File(response_data)
 
     else:
         return None
@@ -99,7 +99,7 @@ def get_share(file_id):
     
     if response.status_code == 200:
         response_data = response.json()
-        return response_data
+        return Share(response_data)
     else:
         return None
 

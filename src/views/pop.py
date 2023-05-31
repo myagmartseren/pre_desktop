@@ -1,11 +1,11 @@
 
 from tkinter import Canvas, Entry, Button, PhotoImage, messagebox, Frame
+from tkinter.filedialog import asksaveasfile
+
 from utils import relative_to_assets
 import api
-from umbral import (SecretKey, Signer,PublicKey, CapsuleFrag,Capsule,encrypt, decrypt_original,decrypt_reencrypted, generate_kfrags,reencrypt)
-
-from cryptography.fernet import Fernet
 from models import * 
+from encryption import *  
 
 class PopView(Frame):
     def __init__(self, root,id):
@@ -114,77 +114,44 @@ class PopView(Frame):
         canvas.pack()
         self.window.resizable(False, False)
         self.window.mainloop()
-    def decrypt(self):
-        import main
-        from tkinter import filedialog
-        directory = filedialog.askdirectory()
-        cipher = api.download_file(self.file.get("path"))
-        capsule_hex = self.file.get("capsule").replace('\\x', '').replace(' ', '')
-        capsule_bytes = bytes.fromhex(capsule_hex)
-        key_hex = self.file.get("key").replace('\\x', '').replace(' ', '')
-        key_bytes = bytes.fromhex(key_hex)
-        if self.file.get("owner_id") == main.current_user.id:    
-            key = decrypt_original(SecretKey.from_bytes(main.private_key),Capsule.from_bytes(capsule_bytes), key_bytes)
+    def decrypt(self):        
+        cipher = api.download_file(self.file.path)
+        capsule_bytes = bytes.fromhex(self.file.capsule)
+        key_bytes = bytes.fromhex(self.file.key)
+        
+        if self.file.id == main.current_user.id:    
+            key = decrypt_o(capsulse_bytes=capsule_bytes,key_bytes=key_bytes)
+        
         else:
             share = api.get_share(self.file.get("id"))
             if share is None:
-                messagebox.showerror("Error Get Share","Share avahad aldaa garlaa")
+                messagebox.showerror("Алдаа","Хүсэлт явхад алдаа гарлаа")
                 return
             
-            cfrag = share.get("rekey").replace('\\x', '').replace(' ', '')
-            cfrag_bytes = bytes.fromhex(cfrag)
-            
-            delegator_user = api.get_user(share.get("delegator_id"))
-            if delegator_user is None:
-                messagebox.showerror("Error Get delegator_user","delegator_user avahad aldaa garlaa")
-                return
-            Capsule.from_bytes(capsule_bytes)
-            delegator_user.get("signer_key")
+            delegator = api.get_user(share.get("delegator_id"))
+            if delegator is None:
+                messagebox.showerror("Алдаа","delegator_user avahad aldaa garlaa")
+                return 
+            key= decrypt_pre(share, delegator)
 
-            suspicious_cfrag = CapsuleFrag.from_bytes(bytes(cfrag_bytes))
-            delegating_pk = PublicKey.from_bytes(bytes.fromhex(delegator_user.get("public_key")))
-            # verifying_pk=PublicKey.from_bytes(bytes.fromhex(delegator_user.get("signer_key")))
-
-            cfrags = suspicious_cfrag.verify(Capsule.from_bytes(capsule_bytes),
-                       verifying_pk=delegating_pk,
-                       delegating_pk=delegating_pk,
-                       receiving_pk=PublicKey.from_bytes(bytes.fromhex(main.current_user.public_key)),
-                       )
-            key = decrypt_reencrypted(receiving_sk=SecretKey.from_bytes(main.private_key),
-                                    delegating_pk=delegating_pk,
-                                    capsule=Capsule.from_bytes(capsule_bytes),
-                                    verified_cfrags=[cfrags],
-                                    ciphertext=key_bytes)
-        plaincontent = Fernet(key).decrypt(cipher)
-        with open(f"{directory}/{self.file.get('name')}","wb") as f:
-            f.write(plaincontent)
+        file_path = asksaveasfile(mode='w',defaultextension="", initialfile=self.file.name)
+        file_decrypt(key,cipher,file_path)
 
     def share(self):
-        import main
         email = self.email_entry.get()
         user = api.get_user(email)
         if user == None:
             messagebox.showerror("Error", "failed get user")
             return
-        capsule_hex = self.file.get("capsule").replace('\\x', '').replace(' ', '')
-        capsule_bytes = bytes.fromhex(capsule_hex)
-
-        user_pk_hex =user.get("public_key").replace('\\x', '').replace(' ', '')
-        user_pk_bytes = bytes.fromhex(user_pk_hex)
-
-        kfrags = generate_kfrags(delegating_sk=SecretKey.from_bytes(main.private_key),
-        receiving_pk=PublicKey.from_bytes(user_pk_bytes),
+        key = generate_k(self.file, user)
         
-        signer=Signer(SecretKey.from_bytes(main.private_key)),
-            threshold=1,
-            shares=20)
+        temp_share = Share({
+            'file_id':self.file.get("id"),
+            'delegatee_id': user.get("id"),
+            'rekey': hex(key.__bytes__())}
+        )
         
-        cfrag = reencrypt(capsule=Capsule.from_bytes(capsule_bytes), kfrag=kfrags[0])
-        if api.add_share(Share({
-        "file_id":self.file.get("id"),
-        "delegator_id": main.current_user.id,
-        'delegatee_id': user.get("id"),
-        "rekey":cfrag.__bytes__()})):
+        if api.add_share(temp_share):
             messagebox.showinfo("Success", "success")
         else:
             messagebox.showerror("Error", "failed get user")

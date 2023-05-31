@@ -134,7 +134,7 @@ class HomeView(Frame):
         #region Logo
         logo_image = PhotoImage(
             file=relative_to_assets("home/logo.png"))
-        logo_canvas = canvas.create_image(
+        canvas.create_image(
             126.0,
             126.0,
             image=logo_image
@@ -192,7 +192,7 @@ class HomeView(Frame):
         #region Search background
         search_image = PhotoImage(
             file=relative_to_assets("home/search.png"))
-        search_canva = canvas.create_image(
+        canvas.create_image(
             691.0,
             115.0,
             image=search_image

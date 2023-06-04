@@ -159,13 +159,13 @@ class LoginView(Frame):
     def login(self):
         email = self.email.get()
         password = self.password.get()
-        user = api.login(email, password)
+        user, message = api.login(email, password)
         import main
         if user:
             main.current_user = user
             self.open_home_view()
         else:
-            messagebox.showerror("Error", "Invalid username or password")
+            messagebox.showerror("Error", message)
 
     def open_register_view(self):
         from .register import RegisterView 

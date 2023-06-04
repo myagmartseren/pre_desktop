@@ -9,25 +9,29 @@ def login(email, password):
         "email": email,
         "password": password,
     }
-    response = requests.post(url, json=data)
-    if response.status_code == 200:
-        response_data = response.json()
-        id = response_data.get('id')
-        access_token = response_data.get('access_token')
-        username = response_data.get('username')
-        public_key = response_data.get('public_key')
-        if access_token and username and public_key:
-            user = User({
-                "id":id,
-                "access_token":access_token,
-                "username" :username,
-                "public_key":public_key,
-            })
-            user.access_token = access_token
-            import main
-            with open(f"{username}.pem", "rb") as f:
-                main.private_key = f.read()
-            return user
+    try:
+        response = requests.post(url, json=data)
+        if response.status_code == 200:
+            response_data = response.json()
+            id = response_data.get('id')
+            access_token = response_data.get('access_token')
+            username = response_data.get('username')
+            public_key = response_data.get('public_key')
+            if access_token and username and public_key:
+                user = User({
+                    "id":id,
+                    "access_token":access_token,
+                    "username" :username,
+                    "public_key":public_key,
+                })
+                user.access_token = access_token
+                import main
+                with open(f"{username}.pem", "rb") as f:
+                    main.private_key = f.read()
+                return user, ""
+    except requests.exceptions.RequestException as e:
+        return None, "Холботоо шалгана уу"
+    
     return None
 
 

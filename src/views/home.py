@@ -14,6 +14,7 @@ class HomeView(Frame):
         self.window.title('PRE Файл хуваалцах систем')
         self.file_names = list()
         self.file_buttons = list()
+        self.nav_buttons = list()
         #region GUI Home
         #region Frame
         self.window.geometry("1440x1024")
@@ -52,54 +53,18 @@ class HomeView(Frame):
             file=relative_to_assets("home/image_2.png"))
         
         self.file_image = PhotoImage(file=relative_to_assets("home/file.png"))
-        self.get_files()
-        
         #endregion Files
 
         #region Left Bar
-        #region shared files
-        shared_image = PhotoImage(
-            file=relative_to_assets("home/shared_files.png"))
-        shared_button = Button(
-            image=shared_image,
-            borderwidth=0,
-            highlightthickness=0,
-            command=partial(self.get_files, True),
-            relief="flat"
-        )
-
-        shared_button.place(
-            x=50.0,
-            y=397.0,
-            width=239.0,
-            height=46.0
-        )
-        #endregion My shared files
-
-        #region shared with me files
-        shared_with_me_image = PhotoImage(
-            file=relative_to_assets("home/shared_with_me_files.png"))
-        shared_with_me_button = Button(
-            image=shared_with_me_image,
-            borderwidth=0,
-            highlightthickness=0,
-            command=partial(self.get_files, False),
-            relief="flat"
-        )
-        shared_with_me_button.place(
-            x=50.0,
-            y=331.0,
-            width=239.0,
-            height=43.0
-        )
-        #endregion shared with me files
-
         #region My files
-        my_files_image = PhotoImage(
+        self.my_files_image = PhotoImage(
             file=relative_to_assets("home/my_files.png"))
         
+        self.my_files_image_hvr = PhotoImage(
+            file=relative_to_assets("home/my_files_hvr.png"))
+        
         my_files_button = Button(
-            image=my_files_image,
+            image=self.my_files_image,
             borderwidth=0,
             highlightthickness=0,
             command=self.get_files,
@@ -111,8 +76,55 @@ class HomeView(Frame):
             width=236.0,
             height=43.0
         )
+        self.nav_buttons.append(my_files_button)
         #endregion My files
 
+        #region shared with me files
+        self.shared_with_me_image = PhotoImage(
+            file=relative_to_assets("home/shared_with_me_files.png"))
+        
+        self.shared_with_me_image_hvr = PhotoImage(
+            file=relative_to_assets("home/shared_with_me_files_hvr.png"))
+        
+        shared_with_me_button = Button(
+            image=self.shared_with_me_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=partial(self.get_files, False),
+            relief="flat"
+        )
+        shared_with_me_button.place(
+            x=50.0,
+            y=331.0,
+            width=239.0,
+            height=43.0
+        )
+        self.nav_buttons.append(shared_with_me_button)
+        #endregion shared with me files
+
+        #region shared files
+        self.shared_image = PhotoImage(
+            file=relative_to_assets("home/shared_files.png"))
+        self.shared_image_hvr = PhotoImage(
+            file=relative_to_assets("home/shared_files_hvr.png"))
+        shared_button = Button(
+            image=self.shared_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=partial(self.get_files, True),
+            relief="flat"
+        )
+        self.nav_buttons.append(shared_button)
+
+        shared_button.place(
+            x=50.0,
+            y=397.0,
+            width=239.0,
+            height=46.0
+        )
+        #endregion My shared files
+
+        self.get_files()   
         #region New File
         new_file_image = PhotoImage(
             file=relative_to_assets("home/new_file.png"))
@@ -312,7 +324,6 @@ class HomeView(Frame):
         #endregion Pager 3
 
         #endregion Pager
-
        
         #region empty
         
@@ -361,9 +372,9 @@ class HomeView(Frame):
                         )
                 else:
                     break
-        
+            
         if len(self.files) == 0:
-            self.canvas.create_image(
+            self.desc_logo_canvas =  self.canvas.create_image(
                 817.0,
                 402.0,
                 image=self.desc_logo
@@ -379,9 +390,23 @@ class HomeView(Frame):
         else:
             if hasattr(self,'description'):
                 self.canvas.delete(self.description)
-                self.canvas.delete(self.desc_logo)
+                self.canvas.delete(self.desc_logo_canvas)
+        self.refresh_bar(shared_files)
 
-
+    def refresh_bar(self, shared = None):
+        if shared == True:
+            self.nav_buttons[0].configure(image = self.my_files_image)
+            self.nav_buttons[1].configure(image = self.shared_with_me_image)
+            self.nav_buttons[2].configure(image = self.shared_image_hvr)
+        elif shared == False:
+            self.nav_buttons[0].configure(image = self.my_files_image)
+            self.nav_buttons[1].configure(image = self.shared_with_me_image_hvr)
+            self.nav_buttons[2].configure(image = self.shared_image)
+        else:
+            self.nav_buttons[0].configure(image = self.my_files_image_hvr)
+            self.nav_buttons[1].configure(image = self.shared_with_me_image)
+            self.nav_buttons[2].configure(image = self.shared_image)
+    
     def open_pop_view(self,id):
         pop_window = Toplevel(self.window) 
         from .pop import PopView
@@ -392,7 +417,7 @@ class HomeView(Frame):
             import main
             main.current_user = None
             from .login import LoginView 
-            LoginView(self.window)  
+            LoginView(self.window)
         else:
             messagebox.showerror("Pop-up Message", "failed to logout")
 

@@ -122,3 +122,30 @@ def add_share(share: Share):
         return True
     else:
         return None
+
+def get_users_by_file(file_id):
+    url = API_URL + f"/shares/{file_id}/users"
+    import main
+    headers = {
+        "Authorization": "Bearer " + main.current_user.access_token
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        return None
+
+def delete_share(file_id,email):
+    url = API_URL + f"/shares/{file_id}/{email}"
+    import main
+    headers = {
+        "Authorization": "Bearer " + main.current_user.access_token
+    }
+
+    response = requests.delete(url, headers=headers)
+    if response.status_code == 200:
+        return True
+    else:
+        return None

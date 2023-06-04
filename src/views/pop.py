@@ -1,9 +1,10 @@
-from tkinter import Canvas, Entry, Button, PhotoImage, messagebox, Frame, Scrollbar, ttk
+from tkinter import Canvas, Entry, Button, PhotoImage, messagebox, Frame
 from tkinter.filedialog import asksaveasfile
 from utils import relative_to_assets
 import api
 from models import * 
 from encryption import *  
+from functools import partial
 
 class PopView(Frame):
     def __init__(self, root, id):
@@ -176,13 +177,14 @@ class PopView(Frame):
             button_image_1 = PhotoImage(
                 file=relative_to_assets("pop_up/big_decrypt.png"))
             button_1 = Button(
-                canvas,
+                self.window,
                 image=button_image_1,
                 borderwidth=0,
                 highlightthickness=0,
                 command=self.decrypt,
                 relief="flat"
             )
+
             button_1.place(
                 x=98.0,
                 y=27.0,
@@ -204,13 +206,14 @@ class PopView(Frame):
         for item in self.scroll_items:
             self.canvas_shared_users.delete(item)
         self.scroll_items = list()
-        for i in range(9):
+        emails = api.get_users_by_file(self.file.id)
+        for i in range(len(emails)):
             y = 60 * i
             canvas_text = self.canvas_shared_users.create_text(
                 30.0,
                 20.0 + y,
                 anchor="nw",
-                text="test@gmail.com",
+                text=emails[i],
                 fill="#003B73",
                 font=("Inter", 12)
             )
@@ -231,7 +234,7 @@ class PopView(Frame):
                 image=self.remove_btn_img,
                 borderwidth=0,
                 highlightthickness=0,
-                command=lambda: print("Button clicked for row", i),
+                command=partial(self.delete_share,emails[i]),
                 relief="flat"
             )
             self.user_buttons.append(temp_button)
@@ -249,6 +252,12 @@ class PopView(Frame):
             
             self.scroll_items.append(temp_button_window)
         self.canvas_shared_users.configure(scrollregion=self.canvas_shared_users.bbox("all"))
+    def delete_share(self, email):
+        if api.delete_share(self.file.id,email):
+            self.shared_users()
+            messagebox.showinfo("Амжилттай","Ажилттай устгалаа")
+        else:
+            messagebox.showinfo("Алдаа","Алдаа гарлаа")
     
     def decrypt(self):        
         cipher = api.download_file(self.file.path)
@@ -282,8 +291,7 @@ class PopView(Frame):
             'file_id':self.file.id,
             'delegatee_id': user.id,
             'rekey': key.hex()}
-        )
-        
+        ) 
         if api.add_share(temp_share):
             messagebox.showinfo("Success", "success")
         else:

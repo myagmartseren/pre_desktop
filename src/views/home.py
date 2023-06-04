@@ -3,10 +3,8 @@ from tkinter import Canvas, Entry, Button, PhotoImage, messagebox, Frame, String
 from utils import relative_to_assets
 from functools import partial
 from models import *
-from umbral import (PublicKey,encrypt)
-from cryptography.fernet import Fernet
+from umbral import (encrypt)
 import api
-import uuid
 
 class HomeView(Frame):
     def __init__(self, root):

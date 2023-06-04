@@ -31,7 +31,6 @@ class HomeView(Frame):
             relief = "ridge"
         )
 
-        
         self.canvas.place(x = 0, y = 0)
         self.canvas.create_rectangle(
             0.0,

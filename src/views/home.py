@@ -324,10 +324,6 @@ class HomeView(Frame):
         #endregion Pager 3
 
         #endregion Pager
-       
-        #region empty
-        
-        #endregion empty
 
         self.window.resizable(False, False)
         self.window.mainloop()
@@ -372,7 +368,10 @@ class HomeView(Frame):
                         )
                 else:
                     break
-            
+
+        self.refresh_bar(shared_files)
+
+    def refresh_bar(self, shared = None):
         if len(self.files) == 0:
             self.desc_logo_canvas =  self.canvas.create_image(
                 817.0,
@@ -388,12 +387,11 @@ class HomeView(Frame):
                 font=("Inter Bold", 50 * -1)
             )
         else:
+            if hasattr(self,'desc_logo_canvas'):
+                self.canvas.delete(self.desc_logo_canvas)
             if hasattr(self,'description'):
                 self.canvas.delete(self.description)
-                self.canvas.delete(self.desc_logo_canvas)
-        self.refresh_bar(shared_files)
-
-    def refresh_bar(self, shared = None):
+        
         if shared == True:
             self.nav_buttons[0].configure(image = self.my_files_image)
             self.nav_buttons[1].configure(image = self.shared_with_me_image)

@@ -13,7 +13,8 @@ class PopView(Frame):
             messagebox.showerror("Error", "failed get file")
             return
         self.window = root
-
+        print(self.file.owner_id, main.current_user.id
+              )
         if self.file.owner_id == main.current_user.id:
             self.window.geometry("423x299")
             self.window.configure(bg = "#FFFFFF")
@@ -294,5 +295,6 @@ class PopView(Frame):
         ) 
         if api.add_share(temp_share):
             messagebox.showinfo("Success", "success")
+            self.shared_users()
         else:
             messagebox.showerror("Error", "failed get user")

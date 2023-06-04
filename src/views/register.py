@@ -3,6 +3,7 @@ from tkinter import Canvas, Entry, Button, PhotoImage, messagebox, Frame
 from utils import relative_to_assets
 from models import *
 import api
+from .login import LoginView
 
 class RegisterView(Frame):
     def __init__(self, main):
@@ -259,12 +260,13 @@ class RegisterView(Frame):
             messagebox.showerror("Алдаа","Нууц үг таарахгүй байна!")
             return
         
-        if api.register(user=User({"email": email, "password": password, "username":self.username_entry.get()})):
+        check, error = api.register(user=User({"email": email, "password": password, "username":self.username_entry.get()}))
+        if check:
             from .home import HomeView
             HomeView(self.window)
         else:
-            messagebox.showerror("Error", "failed to register")
+            messagebox.showerror("Error", error)
     def cancel_action(self):
-        pass
-        # LoginView(self.window)
+        # pass
+        LoginView(self.window)
 

@@ -3,6 +3,7 @@ from models import *
 from utils import relative_to_files
 
 API_URL = 'http://localhost:5000'
+# API_URL = 'http://192.168.1.5:5000'
 
 def add_file(file: File):
     url = API_URL + "/files"

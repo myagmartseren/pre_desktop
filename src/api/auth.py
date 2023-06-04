@@ -3,6 +3,8 @@ from models import User
 
 API_URL = 'http://localhost:5000'
 
+# API_URL = 'http://192.168.1.5:5000'
+
 def login(email, password):
     url = API_URL + "/auth/login"
     data = {
@@ -29,11 +31,11 @@ def login(email, password):
                 with open(f"{username}.pem", "rb") as f:
                     main.private_key = f.read()
                 return user, ""
+        else:
+            return None, response.json().get("error")
     except requests.exceptions.RequestException as e:
         return None, "Холботоо шалгана уу"
-    
-    return None
-
+    return None, ""
 
 def register(user: User):
     url = API_URL + "/auth/register"
@@ -52,7 +54,8 @@ def register(user: User):
         public_key = response_data.get('public_key')
 
         if access_token and username and public_key:
-            user = User({"username":username, "public_key":public_key})
+            # user = User({"username":username, "public_key":public_key, "id":})
+            user = User(response_data)
             user.access_token = access_token
             main.current_user=user
             private_key_hex = response_data.get('private_key')
@@ -62,8 +65,9 @@ def register(user: User):
                     f.write(private_key)
                 import main
                 main.private_key = private_key
-            return True, user
-    return False, None
+            return True, ""
+    else:
+        return False, response.json().get("error")
 
 def logout():
     url = API_URL + "/auth/logout"
@@ -71,7 +75,6 @@ def logout():
     headers = {
         "Authorization": "Bearer " + main.current_user.access_token
     }
-
     response = requests.post(url, headers=headers)
     if response.status_code == 200:
         return True

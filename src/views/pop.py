@@ -1,5 +1,4 @@
-
-from tkinter import Canvas, Entry, Button, PhotoImage, messagebox, Frame
+from tkinter import Canvas, Entry, Button, PhotoImage, messagebox, Frame, Scrollbar, ttk
 from tkinter.filedialog import asksaveasfile
 
 from utils import relative_to_assets
@@ -8,16 +7,18 @@ from models import *
 from encryption import *  
 
 class PopView(Frame):
-    def __init__(self, root,id):
-        self.file = api.get_file(id)
+    def __init__(self, root, id):
+        self.file= api.get_file(id)
         if self.file == None:
             messagebox.showerror("Error", "failed get file")
             return
         self.window = root
         self.window.geometry("423x299")
         self.window.configure(bg = "#FFFFFF")
-        self.window.title("File")
-        
+        self.window.title(self.file.name)
+        self.user_buttons = list()
+        self.scroll_items = list()
+
         canvas = Canvas(
             self.window,
             bg = "#FFFFFF",
@@ -29,91 +30,187 @@ class PopView(Frame):
         )
 
         canvas.place(x = 0, y = 0)
-        button_image_1 = PhotoImage(file=relative_to_assets("frame5/button_1.png"))
-        decrypt_button = Button(
+        
+        decrypt_btn_img = PhotoImage(
+            file=relative_to_assets("pop_up/button_1.png"))
+        decrypt_btn_img_hvr = PhotoImage(
+            file=relative_to_assets("pop_up/button_2.png"))
+        
+        decrypt_btn = Button(
             self.window,
-            image=button_image_1,
+            image=decrypt_btn_img,
             borderwidth=0,
             highlightthickness=0,
-            command=self.decrypt,
+            command=lambda: print("button_1 clicked"),
             relief="flat"
         )
-
-        decrypt_button.place(
+        decrypt_btn.place(
             x=33.0,
-            y=238.0,
-            width=363.0,
+            y=236.0,
+            width=175.0,
             height=37.0
         )
 
-        button_image_2 = PhotoImage(
-            file=relative_to_assets("frame5/button_2.png"))
-        share_button = Button(
+        delete_btn_img = PhotoImage(
+            file=relative_to_assets("pop_up/button_3.png"))
+        delete_btn_img_hvr = PhotoImage(
+            file=relative_to_assets("pop_up/button_4.png"))
+        
+        delete_btn = Button(
             self.window,
-            image=button_image_2,
+            image=delete_btn_img,
             borderwidth=0,
             highlightthickness=0,
-            command=self.share,
+            command=lambda: print("button_3 clicked"),
             relief="flat"
         )
-        share_button.place(
+
+        delete_btn.place(
+            x=224.0,
+            y=237.0,
+            width=175.0,
+            height=37.0
+        ) 
+
+        share_btn_img = PhotoImage(
+            file=relative_to_assets("pop_up/button_5.png"))
+        share_btn_img_hvr = PhotoImage(
+            file=relative_to_assets("pop_up/button_6.png"))
+        share_btn = Button(
+            self.window,
+            image=share_btn_img,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("button_5 clicked"),
+            relief="flat"
+        )
+
+        share_btn.place(
             x=311.0,
             y=15.0,
             width=85.0,
             height=37.0
         )
 
-        image_image_1 = PhotoImage(
-            file=relative_to_assets("frame5/image_1.png"))
+        entry_frame = PhotoImage(
+            file=relative_to_assets("pop_up/image_1.png"))
         
-        image_1 = canvas.create_image(
+        canvas.create_image(
             165.0,
             33.0,
-            image=image_image_1
+            image=entry_frame
         )
 
-        entry_image_1 = PhotoImage(
-            file=relative_to_assets("frame5/entry_1.png"))
-        entry_bg_1 = canvas.create_image(
+        entry_bg = PhotoImage(
+            file=relative_to_assets("pop_up/entry_1.png"))
+        canvas.create_image(
             164.5,
             34.0,
-            image=entry_image_1
+            image=entry_bg
         )
 
-        self.email_entry = Entry(
+        entry = Entry(
             self.window,
             bd=0,
             bg="#F5F5F5",
             fg="#000716",
             highlightthickness=0
         )
-        self.email_entry.place(
+
+        entry.place(
             x=38.0,
             y=19.0,
             width=253.0,
             height=28.0
         )
 
-        canvas.create_text(
-            33.0,
-            82.0,
-            anchor="nw",
-            text="test@gmail.com",
-            fill="#003B73",
-            font=("Inter", 12 * -1)
-        )
-
-        canvas.create_rectangle(
-            31.0,
-            102.0,
-            390.0,
-            103.0,
-            fill="#003B73",
-            outline="")
+        import tkinter as tk
+        from tkinter import ttk
         
-        canvas.pack()
+        self.frame = ttk.Frame(self.window)
+        self.frame.pack(pady=10)
+        
+        self.frame.place(x=12, y=65)
+        
+        self.canvas_shared_users = tk.Canvas(
+            self.frame,
+            width=400,
+            height=160,
+            bg="#FFFFFF",
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
+        
+        self.canvas_shared_users.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        
+        scrollbar = ttk.Scrollbar(self.frame, orient=tk.VERTICAL, command=self.canvas_shared_users.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        self.canvas_shared_users.configure(yscrollcommand=scrollbar.set)
+        self.canvas_shared_users.bind('<Configure>', lambda e: self.canvas_shared_users.configure(scrollregion=self.canvas_shared_users.bbox("all")))
+        
+        scrollable_frame = ttk.Frame(self.canvas_shared_users)
+        self.canvas_shared_users.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        
+        self.remove_btn_img = tk.PhotoImage(file=relative_to_assets("pop_up/button_7.png"))
+        self.remove_btn_img_hvr = tk.PhotoImage(file=relative_to_assets("pop_up/button_9.png"))
+        self.shared_users()
+
         self.window.resizable(False, False)
         self.window.mainloop()
+
+    def shared_users(self):
+        import tkinter as tk
+        for button in self.user_buttons:
+            button.destroy()
+        self.user_buttons = list()
+        for item in self.scroll_items:
+            self.canvas_shared_users.delete(item)
+        self.scroll_items = list()
+        for i in range(9):
+            y = 60 * i
+            canvas_text = self.canvas_shared_users.create_text(
+                30.0,
+                20.0 + y,
+                anchor="nw",
+                text="test@gmail.com",
+                fill="#003B73",
+                font=("Inter", 12)
+            )
+            self.scroll_items.append(canvas_text)
+    
+            canvas_rectangle = self.canvas_shared_users.create_rectangle(
+                31.0,
+                41.0 + y,
+                361.0,
+                43.0 + y,
+                fill="#003B73",
+                outline=""
+            )
+            self.scroll_items.append(canvas_rectangle)
+
+            temp_button = tk.Button(
+                self.frame,
+                image=self.remove_btn_img,
+                borderwidth=0,
+                highlightthickness=0,
+                command=lambda: print("Button clicked for row", i),
+                relief="flat"
+            )
+            self.user_buttons.append(temp_button)
+
+            temp_button_window = self.canvas_shared_users.create_window(
+                370,
+                20.0 + y,
+                anchor="nw",
+                window=temp_button,
+                width=24,
+                height=24
+            )
+            self.scroll_items.append(temp_button_window)
+        self.canvas_shared_users.configure(scrollregion=self.canvas_shared_users.bbox("all"))
+    
     def decrypt(self):        
         cipher = api.download_file(self.file.path)
         capsule_bytes = bytes.fromhex(self.file.capsule)
@@ -121,7 +218,6 @@ class PopView(Frame):
         
         if self.file.id == main.current_user.id:    
             key = decrypt_o(capsulse_bytes=capsule_bytes,key_bytes=key_bytes)
-        
         else:
             share = api.get_share(self.file.get("id"))
             if share is None:

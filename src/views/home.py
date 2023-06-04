@@ -21,7 +21,7 @@ class HomeView(Frame):
         self.window.geometry("1440x1024")
         self.window.configure(bg = "#1A1D2B")
 
-        canvas = Canvas(
+        self.canvas = Canvas(
             self.window,
             bg = "#1A1D2B",
             height = 1024,
@@ -31,8 +31,9 @@ class HomeView(Frame):
             relief = "ridge"
         )
 
-        canvas.place(x = 0, y = 0)
-        canvas.create_rectangle(
+        
+        self.canvas.place(x = 0, y = 0)
+        self.canvas.create_rectangle(
             0.0,
             0.0,
             1450.0,
@@ -42,7 +43,7 @@ class HomeView(Frame):
 
         background_image = PhotoImage(
             file=relative_to_assets("home/background.png"))
-        canvas.create_image(
+        self.canvas.create_image(
             880.0,
             603.0,
             image=background_image
@@ -50,6 +51,9 @@ class HomeView(Frame):
         #endregion Frame
 
         #region Files
+        self.desc_logo = PhotoImage(
+            file=relative_to_assets("home/image_2.png"))
+        
         self.file_image = PhotoImage(file=relative_to_assets("home/file.png"))
         self.get_files()
         
@@ -134,7 +138,7 @@ class HomeView(Frame):
         #region Logo
         logo_image = PhotoImage(
             file=relative_to_assets("home/logo.png"))
-        canvas.create_image(
+        self.canvas.create_image(
             126.0,
             126.0,
             image=logo_image
@@ -192,7 +196,7 @@ class HomeView(Frame):
         #region Search background
         search_image = PhotoImage(
             file=relative_to_assets("home/search.png"))
-        canvas.create_image(
+        self.canvas.create_image(
             691.0,
             115.0,
             image=search_image
@@ -202,7 +206,7 @@ class HomeView(Frame):
         #region Search entry
         search_entry_image = PhotoImage(
             file=relative_to_assets("home/search_entry.png"))
-        search_entry_bg = canvas.create_image(
+        search_entry_bg = self.canvas.create_image(
             706.5,
             114.5,
             image=search_entry_image
@@ -248,7 +252,7 @@ class HomeView(Frame):
             height=19.0
         )
 
-        canvas.create_text(
+        self.canvas.create_text(
             840.0,
             979.0,
             anchor="nw",
@@ -312,26 +316,9 @@ class HomeView(Frame):
 
         #endregion Pager
 
-        desc_logo = PhotoImage(
-            file=relative_to_assets("home/image_2.png"))
+       
         #region empty
-        if len(self.files) == 0:
-            canvas.create_image(
-                817.0,
-                402.0,
-                image=desc_logo
-            )
-            description = canvas.create_text(
-                481.0,
-                467.0,
-                anchor="nw",
-                text="Аюулгүй фаил хуваалцах \n \tүйлчилгээ",
-                fill="#003B73",
-                font=("Inter Bold", 50 * -1)
-            )
-        else:
-            canvas.delete(description)
-            canvas.delete(desc_logo)
+        
         #endregion empty
 
         self.window.resizable(False, False)
@@ -377,11 +364,31 @@ class HomeView(Frame):
                         )
                 else:
                     break
+        
+        if len(self.files) == 0:
+            self.canvas.create_image(
+                817.0,
+                402.0,
+                image=self.desc_logo
+            )
+            self.description = self.canvas.create_text(
+                481.0,
+                467.0,
+                anchor="nw",
+                text="Аюулгүй фаил хуваалцах \n \tүйлчилгээ",
+                fill="#003B73",
+                font=("Inter Bold", 50 * -1)
+            )
+        else:
+            if hasattr(self,'description'):
+                self.canvas.delete(self.description)
+                self.canvas.delete(self.desc_logo)
+
 
     def open_pop_view(self,id):
         pop_window = Toplevel(self.window) 
         from .pop import PopView
-        PopView(pop_window,id)
+        PopView(pop_window, id)
     
     def logout(self):
         if api.logout():

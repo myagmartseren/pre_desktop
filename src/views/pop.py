@@ -1,6 +1,5 @@
 from tkinter import Canvas, Entry, Button, PhotoImage, messagebox, Frame, Scrollbar, ttk
 from tkinter.filedialog import asksaveasfile
-
 from utils import relative_to_assets
 import api
 from models import * 
@@ -41,9 +40,10 @@ class PopView(Frame):
             image=decrypt_btn_img,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_1 clicked"),
+            command=self.decrypt,
             relief="flat"
         )
+
         decrypt_btn.place(
             x=33.0,
             y=236.0,
@@ -81,7 +81,7 @@ class PopView(Frame):
             image=share_btn_img,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_5 clicked"),
+            command=self.share,
             relief="flat"
         )
 
@@ -109,7 +109,7 @@ class PopView(Frame):
             image=entry_bg
         )
 
-        entry = Entry(
+        self.email_entry = Entry(
             self.window,
             bd=0,
             bg="#F5F5F5",
@@ -117,7 +117,7 @@ class PopView(Frame):
             highlightthickness=0
         )
 
-        entry.place(
+        self.email_entry.place(
             x=38.0,
             y=19.0,
             width=253.0,
@@ -208,6 +208,9 @@ class PopView(Frame):
                 width=24,
                 height=24
             )
+            # self.canvas_shared_users.tag_bind(temp_button_window, "<Enter>", lambda event, rect=canvas_rectangle: self.canvas_shared_users.itemconfig(rect, fill="#000000"))
+            # self.canvas_shared_users.tag_bind(temp_button_window, "<Leave>", lambda event, rect=canvas_rectangle: self.canvas_shared_users.itemconfig(rect, fill="#003B73"))
+            
             self.scroll_items.append(temp_button_window)
         self.canvas_shared_users.configure(scrollregion=self.canvas_shared_users.bbox("all"))
     
@@ -215,23 +218,22 @@ class PopView(Frame):
         cipher = api.download_file(self.file.path)
         capsule_bytes = bytes.fromhex(self.file.capsule)
         key_bytes = bytes.fromhex(self.file.key)
-        
-        if self.file.id == main.current_user.id:    
-            key = decrypt_o(capsulse_bytes=capsule_bytes,key_bytes=key_bytes)
+        if self.file.owner_id == main.current_user.id:    
+            key = decrypt_o(capsulse_bytes=capsule_bytes, key_bytes=key_bytes)
         else:
-            share = api.get_share(self.file.get("id"))
+            share = api.get_share(self.file.id)
             if share is None:
                 messagebox.showerror("Алдаа","Хүсэлт явхад алдаа гарлаа")
                 return
             
-            delegator = api.get_user(share.get("delegator_id"))
+            delegator = api.get_user(share.delegator_id)
             if delegator is None:
                 messagebox.showerror("Алдаа","delegator_user avahad aldaa garlaa")
-                return 
-            key= decrypt_pre(share, delegator)
+                return
+            key= decrypt_pre(share, delegator,key_bytes,capsule_bytes)
 
         file_path = asksaveasfile(mode='w',defaultextension="", initialfile=self.file.name)
-        file_decrypt(key,cipher,file_path)
+        file_decrypt(cipher, key, file_path)
 
     def share(self):
         email = self.email_entry.get()
@@ -239,12 +241,12 @@ class PopView(Frame):
         if user == None:
             messagebox.showerror("Error", "failed get user")
             return
-        key = generate_k(self.file, user)
-        
+        key = generate_k(user)
+        # print(key,dir(key),type(key))
         temp_share = Share({
-            'file_id':self.file.get("id"),
-            'delegatee_id': user.get("id"),
-            'rekey': hex(key.__bytes__())}
+            'file_id':self.file.id,
+            'delegatee_id': user.id,
+            'rekey': key.hex()}
         )
         
         if api.add_share(temp_share):

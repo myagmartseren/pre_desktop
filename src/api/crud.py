@@ -84,7 +84,7 @@ def get_user(email):
     
     if response.status_code == 200:
         response_data = response.json()
-        return response_data
+        return User(response_data)
     else:
         return None
     
@@ -110,7 +110,7 @@ def add_share(share: Share):
         "file_id": share.file_id,
         "delegator_id": share.delegator_id,
         "delegatee_id": share.delegatee_id,
-        "rekey": share.rekey.hex(),
+        "rekey": share.rekey,
     }
 
     headers = {

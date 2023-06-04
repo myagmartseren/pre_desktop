@@ -123,7 +123,7 @@ class HomeView(Frame):
             image=new_file_image,
             borderwidth=0,
             highlightthickness=0,
-            command=self.open_file,
+            command=self.upload_file,
             relief="flat"
         )
 
@@ -399,7 +399,7 @@ class HomeView(Frame):
         else:
             messagebox.showerror("Pop-up Message", "failed to logout")
 
-    def open_file(self):
+    def upload_file(self):
         file_path = filedialog.askopenfilename(title="Select a file", initialdir="/home")
         filename = file_path.split("/")[-1]
         with open(file_path, "rb") as f:

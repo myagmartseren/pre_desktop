@@ -77,7 +77,7 @@ kfrags = random.sample(kfrags,  # All kfrags from above
 # Bob collects the resulting `cfrags` from several Ursulas.
 # Bob must gather at least `threshold` `cfrags` in order to open the capsule.
 # print(f)
-cfrag = None  # Bob's cfrag collection
+# cfrag = None  # Bob's cfrag collection
 # for kfrag in kfrags:
 cfrag = reencrypt(capsule=capsule, kfrag=kfrags[0])
     # cfrag.append(cfrag)  # Bob collects a cfrag
